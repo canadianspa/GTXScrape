@@ -172,13 +172,15 @@ public class Scrapper extends Application {
 		String[] lines = html.split("<!-- Begin Detail Line -->");
 		for(int i = 1; i < lines.length; i ++)
 		{
-			eanCode1.add(html.substring(html.indexOf("EA&n") + 155, html.indexOf("&", html.indexOf("EA&n")+155))); 
-			desc1.add(html.substring(html.indexOf("EA&n") + 155, html.indexOf("&", html.indexOf("EA&n")+155)));
-			qty1.add(html.substring(html.indexOf("EA&n") + 155, html.indexOf("&", html.indexOf("EA&n")+155)));
+			eanCode1.add(lines[i].substring(lines[i].indexOf("EA&n") + 90, lines[i].indexOf("&", lines[i].indexOf("EA&n")+90))); 
+			desc1.add(lines[i].substring(lines[i].indexOf("EA&n") + 333, lines[i].indexOf("&", lines[i].indexOf("EA&n")+333)));
+			qty1.add(lines[i].substring(191, lines[i].indexOf("&",191)));
+			System.out.println(eanCode1.get(i-1));
+			System.out.println(desc1.get(i -1));
+			System.out.println(qty1.get(i - 1));
+
 		}
-		//System.out.println(custTellNo1);
-		//System.out.println(custTellNo1);
-		//System.out.println(custTellNo1);
+		
 		
 
 		return null;
