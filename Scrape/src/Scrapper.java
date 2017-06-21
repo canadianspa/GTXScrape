@@ -170,9 +170,13 @@ public class Scrapper extends Application {
 		//need to split by <!-- Begin Detail Line -->
 		
 		String[] lines = html.split("<!-- Begin Detail Line -->");
-		eanCode1.add(html.substring(html.indexOf("EA&n") + 155, html.indexOf("&", html.indexOf("EA&n")+155))); 
-		desc1.add(html.substring(html.indexOf("EA&n") + 155, html.indexOf("&", html.indexOf("EA&n")+155)));
-		qty1.add(html.substring(html.indexOf("EA&n") + 155, html.indexOf("&", html.indexOf("EA&n")+155)));		//System.out.println(custTellNo1);
+		for(int i = 1; i < lines.length; i ++)
+		{
+			eanCode1.add(html.substring(html.indexOf("EA&n") + 155, html.indexOf("&", html.indexOf("EA&n")+155))); 
+			desc1.add(html.substring(html.indexOf("EA&n") + 155, html.indexOf("&", html.indexOf("EA&n")+155)));
+			qty1.add(html.substring(html.indexOf("EA&n") + 155, html.indexOf("&", html.indexOf("EA&n")+155)));
+		}
+		//System.out.println(custTellNo1);
 		//System.out.println(custTellNo1);
 		//System.out.println(custTellNo1);
 		
