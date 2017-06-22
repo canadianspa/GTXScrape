@@ -32,20 +32,21 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 public class Scrapper extends Application {
+	int page =1;
+	int placeOnPage = 0;
 	int webPos = 1;
 	WebEngine webEngine;
+	
+	
 	@Override
 	public void start(final Stage stage) {
 		
 		//hacky method dont really know how this works 1:login 2:make it wait 3:click inbox 4:click a order 5:go deeper 6:make sure you have actually gone deeper 7:read order
-		
 		stage.setWidth(700);
 		stage.setHeight(700);
 		Scene scene = new Scene(new Group());
-
 		WebView browser = new WebView();
 		webEngine = browser.getEngine();
-
 		ScrollPane scrollPane = new ScrollPane();
 		scrollPane.setContent(browser);
 
@@ -91,7 +92,8 @@ public class Scrapper extends Application {
 							if(webPos ==4)
 							{								
 								try {
-									webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com' + Content.form.ReadUrl8.value,'_self')");
+									webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com' + Content.form.ReadUrl" + placeOnPage + ".value,'_self')");
+									placeOnPage += 1;
 									webPos = 5;
 								} catch (Exception e) {
 								}
@@ -120,10 +122,9 @@ public class Scrapper extends Application {
 								webPos = 7;
 								}
 								
-								
 							}
 							//
-							
+							//read it
 							if(webPos ==7)
 							{
 								String html = (String) webEngine.executeScript("document.documentElement.outerHTML");
@@ -131,9 +132,15 @@ public class Scrapper extends Application {
 								{
 									EDA myEDA = Scrapper.this.readBNQHTML(html);
 									myEDA.createXLS();
+									EDA.seqNo += 1;
+									
 								}
+								
+								webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailboxFrameset.pl?lang=en&box_type=in");
+								webPos = 4;
 
 							}
+							
 						}
 					}
 				});
@@ -257,8 +264,11 @@ public class Scrapper extends Application {
 	}
 
 	public static void main(String[] args) {
-		Scrapper s = new Scrapper();
-		Scrapper.launch(args);
+		
+		Scrapper.launch();
+		
 
 	}
+	
+	
 }
