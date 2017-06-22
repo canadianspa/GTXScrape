@@ -91,7 +91,7 @@ public class Scrapper extends Application {
 							if(webPos ==4)
 							{								
 								try {
-									webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com' + Content.form.ReadUrl1.value,'_self')");
+									webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com' + Content.form.ReadUrl2.value,'_self')");
 									webPos = 5;
 								} catch (Exception e) {
 								}
@@ -159,6 +159,7 @@ public class Scrapper extends Application {
 		ArrayList<String> desc1 = new ArrayList<String>();
 		ArrayList<String> qty1 = new ArrayList<String>();
 		String dateOrderPlaced, delDate;
+		String custAdd1,custAdd2,custAdd3,custAdd4,custPostCode;
 		
 		storeCode = html.substring(html.indexOf("hfStoreLocCode") + 25, html.indexOf(">", html.indexOf("hfStoreLocCode")+25)-1);
 		purchOrderNo = html.substring(html.indexOf("PURCHASE ORDER NO") + 162, html.indexOf("&", html.indexOf("PURCHASE ORDER NO")+162));
@@ -167,14 +168,82 @@ public class Scrapper extends Application {
 		custName = html.substring(html.indexOf("ADDRESS - HOME DELIVERY") + 183, html.indexOf("&", html.indexOf("ADDRESS - HOME DELIVERY")+183));
 		dateOrderPlaced = html.substring(html.indexOf("PURCHASE ORDER DATE") + 164, html.indexOf("&", html.indexOf("PURCHASE ORDER DATE")+164));
 		delDate = html.substring(html.indexOf("DELIVERY DATE") + 158, html.indexOf("&", html.indexOf("DELIVERY DATE")+158));
+		String custDetail = html.substring(html.indexOf("ADDRESS - HOME DELIVERY"), html.indexOf("CONTACT"));
+		String[] custDetailSplit = custDetail.split("<tr>");
+		String[] custInfo = new String[5]; 
 		
-		System.out.println(storeCode);
-		System.out.println(purchOrderNo);
-		System.out.println(custTellNo1);
-		System.out.println(bQSuppNo);
-		System.out.println(custName);
-		System.out.println(dateOrderPlaced);
-		System.out.println(delDate);
+		//all the actual information 
+		for(int i = 2; i < 7; i++)
+		{
+			custInfo[i -2] = custDetailSplit[i].substring(103, custDetailSplit[i].indexOf("&",103));
+		}
+		
+		//if the information is empty shift postcode
+		int numOfAddrLines = 4;
+		for(int i = 4;i >= 0; i--)
+		{
+			if(custInfo[i].equals(""))
+			{
+				numOfAddrLines = i - 1;
+			}
+		}
+		
+		if(numOfAddrLines == 0)
+		{
+			custAdd1 = "";
+			custAdd2 = "";
+			custAdd3 = "";
+			custAdd4 = "";
+			custPostCode = custInfo[0];
+		}
+		else if(numOfAddrLines == 1)
+		{
+			custAdd1 = custInfo[0];
+			custAdd2 = "";
+			custAdd3 = "";
+			custAdd4 = "";
+			custPostCode = custInfo[1];
+		}
+		else if(numOfAddrLines == 2)
+		{
+			custAdd1 = custInfo[0];
+			custAdd2 = custInfo[1];
+			custAdd3 = "";
+			custAdd4 = "";
+			custPostCode = custInfo[2];
+		}
+		else if(numOfAddrLines == 3)
+		{
+			custAdd1 = custInfo[0];
+			custAdd2 = custInfo[1];
+			custAdd3 = custInfo[2];
+			custAdd4 = "";
+			custPostCode = custInfo[3];
+		}
+		else if(numOfAddrLines == 4)
+		{
+			custAdd1 = custInfo[0];
+			custAdd2 = custInfo[1];
+			custAdd3 = custInfo[2];
+			custAdd4 = custInfo[3];
+			custPostCode = custInfo[4];
+		}
+		else
+		{
+			System.out.println("No Address Lines?");
+			custAdd1 = "";
+			custAdd2 = "";
+			custAdd3 = "";
+			custAdd4 = "";
+			custPostCode = "";
+		}
+		
+		
+		System.out.println(custAdd1);
+		System.out.println(custAdd2);
+		System.out.println(custAdd3);
+		System.out.println(custAdd4);
+		System.out.println(custPostCode);
 		
 		//need to split by <!-- Begin Detail Line -->
 		
@@ -190,7 +259,7 @@ public class Scrapper extends Application {
 
 		}
 		
-		return new EDA( storeCode,  purchOrderNo,  custTellNo1, bQSuppNo,custName,  eanCode1,  desc1,  qty1,dateOrderPlaced,delDate);
+		return new EDA( storeCode,  purchOrderNo,  custTellNo1, bQSuppNo,custName,  eanCode1,  desc1,  qty1,dateOrderPlaced,delDate,custAdd1,custAdd2,custAdd3,custAdd4,custPostCode);
 	
 		
 	}

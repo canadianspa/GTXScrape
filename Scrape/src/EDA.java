@@ -12,6 +12,7 @@ public class EDA {
     private static final String FILE_HEADER2 = "4321,Storecode,PurchOrderNo,CustTelNo1,CustTelNo2,29/11/2000,02/02/2001,200054,DelAdvNoteNo,CustName,CustAdd1,CustAdd2,CustAdd3,CustAdd4,CustPostCode,BQCode1,EanCode1,Desc1,Qty1,SectionNo,OrderComplete,PoVerNo,AsnRefNo,FinalDelFlag,FreeOfChargeItem,Home/StoreDelivery";
 	String storeCode,purchOrderNo,custTellNo1,bqSuppNo,custName;
 	String delDate,dateOrderPlaced;
+	String custAdd1,custAdd2,custAdd3,custAdd4,custPostCode;
 	ArrayList<String> eanCode1 = new ArrayList<String>();
 	ArrayList<String> desc1 = new ArrayList<String>();
 	ArrayList<String> qty1 = new ArrayList<String>();
@@ -22,7 +23,7 @@ public class EDA {
 	//no del date on the site
 	public EDA(String storeCode, String purchOrderNo, String custTellNo1, String bqSuppNo,
 			String custName, ArrayList<String> eanCode1, ArrayList<String> desc1, ArrayList<String> qty1,
-			String dateOrderPlaced, String delDate) {
+			String dateOrderPlaced, String delDate,String custAdd1,String custAdd2,String custAdd3,String custAdd4,String custPostCode) {
 		super();
 		this.storeCode = storeCode;
 		this.purchOrderNo = purchOrderNo;
@@ -34,6 +35,11 @@ public class EDA {
 		this.qty1 = qty1;
 		this.dateOrderPlaced = dateOrderPlaced;
 		this.delDate = delDate;
+		this.custAdd1 = custAdd1;
+		this.custAdd2 = custAdd2;
+		this.custAdd3 = custAdd3;
+		this.custAdd4 = custAdd4;
+		this.custPostCode = custPostCode;
 		
 	}
 
@@ -59,11 +65,11 @@ public class EDA {
 					fileWriter.append(bqSuppNo + ",");
 					fileWriter.append(",");
 					fileWriter.append(custName + ",");
-					fileWriter.append(",");
-					fileWriter.append(",");
-					fileWriter.append(",");
-					fileWriter.append(",");	
-					fileWriter.append(",");
+					fileWriter.append(custAdd1 + ",");
+					fileWriter.append(custAdd2 + ",");
+					fileWriter.append(custAdd3 + ",");
+					fileWriter.append(custAdd4 +",");	
+					fileWriter.append(custPostCode +",");
 					fileWriter.append(",");
 					fileWriter.append(eanCode1.get(i) + ",");
 					fileWriter.append(desc1.get(i) + ",");
