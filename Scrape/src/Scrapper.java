@@ -33,7 +33,7 @@ import javafx.stage.Stage;
 
 public class Scrapper extends Application {
 	int page =1;
-	int placeOnPage = 0;
+	int placeOnPage = 9;
 	int webPos = 1;
 	WebEngine webEngine;
 	
@@ -93,7 +93,7 @@ public class Scrapper extends Application {
 							{								
 								try {
 									webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com' + Content.form.ReadUrl" + placeOnPage + ".value,'_self')");
-									placeOnPage += 1;
+									placeOnPage -= 1;
 									webPos = 5;
 								} catch (Exception e) {
 								}
@@ -132,7 +132,7 @@ public class Scrapper extends Application {
 								{
 									EDA myEDA = Scrapper.this.readBNQHTML(html);
 									myEDA.createXLS();
-									EDA.seqNo += 1;
+									EDA.seqNo = String.valueOf(Integer.parseInt(EDA.seqNo) + 1);
 									
 								}
 								
