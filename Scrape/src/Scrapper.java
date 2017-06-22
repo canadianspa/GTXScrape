@@ -91,7 +91,7 @@ public class Scrapper extends Application {
 							if(webPos ==4)
 							{								
 								try {
-									webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com' + Content.form.ReadUrl2.value,'_self')");
+									webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com' + Content.form.ReadUrl8.value,'_self')");
 									webPos = 5;
 								} catch (Exception e) {
 								}
@@ -130,7 +130,7 @@ public class Scrapper extends Application {
 								if(isBNQ(html))
 								{
 									EDA myEDA = Scrapper.this.readBNQHTML(html);
-									myEDA.createCSV();
+									myEDA.createXLS();
 								}
 
 							}
@@ -154,7 +154,7 @@ public class Scrapper extends Application {
 	public EDA readBNQHTML(String html)
 	{
 		//System.out.println(html);
-		String seqNo, storeCode,purchOrderNo,custTellNo1,bQSuppNo,custName;
+		String storeCode,purchOrderNo,custTellNo1,bQSuppNo,custName;
 		ArrayList<String> eanCode1 = new ArrayList<String>();
 		ArrayList<String> desc1 = new ArrayList<String>();
 		ArrayList<String> qty1 = new ArrayList<String>();
@@ -167,7 +167,9 @@ public class Scrapper extends Application {
 		bQSuppNo = html.substring(html.indexOf("VENDOR") + 155, html.indexOf("&", html.indexOf("VENDOR")+155));
 		custName = html.substring(html.indexOf("ADDRESS - HOME DELIVERY") + 183, html.indexOf("&", html.indexOf("ADDRESS - HOME DELIVERY")+183));
 		dateOrderPlaced = html.substring(html.indexOf("PURCHASE ORDER DATE") + 164, html.indexOf("&", html.indexOf("PURCHASE ORDER DATE")+164));
+		dateOrderPlaced = dateOrderPlaced.replace(".", "/");
 		delDate = html.substring(html.indexOf("DELIVERY DATE") + 158, html.indexOf("&", html.indexOf("DELIVERY DATE")+158));
+		delDate = delDate.replace(".", "/");
 		String custDetail = html.substring(html.indexOf("ADDRESS - HOME DELIVERY"), html.indexOf("CONTACT"));
 		String[] custDetailSplit = custDetail.split("<tr>");
 		String[] custInfo = new String[5]; 
@@ -238,13 +240,6 @@ public class Scrapper extends Application {
 			custPostCode = "";
 		}
 		
-		
-		System.out.println(custAdd1);
-		System.out.println(custAdd2);
-		System.out.println(custAdd3);
-		System.out.println(custAdd4);
-		System.out.println(custPostCode);
-		
 		//need to split by <!-- Begin Detail Line -->
 		
 		String[] lines = html.split("<!-- Begin Detail Line -->");
@@ -253,9 +248,6 @@ public class Scrapper extends Application {
 			eanCode1.add(lines[i].substring(lines[i].indexOf("EA&n") + 90, lines[i].indexOf("&", lines[i].indexOf("EA&n")+90))); 
 			desc1.add(lines[i].substring(lines[i].indexOf("EA&n") + 333, lines[i].indexOf("&", lines[i].indexOf("EA&n")+333)));
 			qty1.add(lines[i].substring(191, lines[i].indexOf("&",191)));
-			System.out.println(eanCode1.get(i-1));
-			System.out.println(desc1.get(i -1));
-			System.out.println(qty1.get(i - 1));
 
 		}
 		
