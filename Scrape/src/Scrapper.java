@@ -36,7 +36,8 @@ public class Scrapper extends Application {
 	WebEngine webEngine;
 	@Override
 	public void start(final Stage stage) {
-		//hacky method dont really know how this works 1:login 2:make it wait 3:click inbox 4:click a order 5:read order
+		
+		//hacky method dont really know how this works 1:login 2:make it wait 3:click inbox 4:click a order 5:go deeper 6:make sure you have actually gone deeper 7:read order
 		
 		stage.setWidth(700);
 		stage.setHeight(700);
@@ -126,7 +127,11 @@ public class Scrapper extends Application {
 							if(webPos ==7)
 							{
 								String html = (String) webEngine.executeScript("document.documentElement.outerHTML");
-								Scrapper.this.readBNQHTML(html);
+								if(isBNQ(html))
+								{
+									EDA myEDA = Scrapper.this.readBNQHTML(html);
+									myEDA.createCSV();
+								}
 
 							}
 						}
@@ -141,6 +146,10 @@ public class Scrapper extends Application {
 		stage.show();
 	}
 	
+	public boolean isBNQ(String html)
+	{
+		return html.contains("BnQ");
+	}
 	//takes certain webpage as a html and ouputs bnq stuff
 	public EDA readBNQHTML(String html)
 	{
@@ -149,23 +158,23 @@ public class Scrapper extends Application {
 		ArrayList<String> eanCode1 = new ArrayList<String>();
 		ArrayList<String> desc1 = new ArrayList<String>();
 		ArrayList<String> qty1 = new ArrayList<String>();
-		
-		Date dateOrderPlaced;
-		String dateOrderPlacedStr;
+		String dateOrderPlaced, delDate;
 		
 		storeCode = html.substring(html.indexOf("hfStoreLocCode") + 25, html.indexOf(">", html.indexOf("hfStoreLocCode")+25)-1);
 		purchOrderNo = html.substring(html.indexOf("PURCHASE ORDER NO") + 162, html.indexOf("&", html.indexOf("PURCHASE ORDER NO")+162));
 		custTellNo1 = html.substring(html.indexOf("PHONE-DAY") + 166, html.indexOf("&", html.indexOf("PHONE-DAY")+166));
 		bQSuppNo = html.substring(html.indexOf("VENDOR") + 155, html.indexOf("&", html.indexOf("VENDOR")+155));
 		custName = html.substring(html.indexOf("ADDRESS - HOME DELIVERY") + 183, html.indexOf("&", html.indexOf("ADDRESS - HOME DELIVERY")+183));
-		dateOrderPlacedStr = html.substring(html.indexOf("PURCHASE ORDER DATE") + 164, html.indexOf("&", html.indexOf("PURCHASE ORDER DATE")+164));
+		dateOrderPlaced = html.substring(html.indexOf("PURCHASE ORDER DATE") + 164, html.indexOf("&", html.indexOf("PURCHASE ORDER DATE")+164));
+		delDate = html.substring(html.indexOf("DELIVERY DATE") + 158, html.indexOf("&", html.indexOf("DELIVERY DATE")+158));
 		
 		System.out.println(storeCode);
 		System.out.println(purchOrderNo);
 		System.out.println(custTellNo1);
 		System.out.println(bQSuppNo);
 		System.out.println(custName);
-		System.out.println(dateOrderPlacedStr);
+		System.out.println(dateOrderPlaced);
+		System.out.println(delDate);
 		
 		//need to split by <!-- Begin Detail Line -->
 		
@@ -181,10 +190,7 @@ public class Scrapper extends Application {
 
 		}
 		
-		
-
-		return null;
-		//return new EDA( storeCode,  purchOrderNo,  custTellNo1, bQSuppNo,custName,  eanCode1,  desc1,  qty1,dateOrderPlaced);
+		return new EDA( storeCode,  purchOrderNo,  custTellNo1, bQSuppNo,custName,  eanCode1,  desc1,  qty1,dateOrderPlaced,delDate);
 	
 		
 	}
