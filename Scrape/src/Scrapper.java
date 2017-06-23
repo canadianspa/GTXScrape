@@ -51,7 +51,7 @@ public class Scrapper extends Application {
 		Parameters p = getParameters();
 		List<String> s = p.getRaw();
 		lastPage = Integer.parseInt(s.get(0));
-		lastPlace = Integer.parseInt(s.get(1));
+		lastPlace = Integer.parseInt(s.get(1)) - 1;
 		seqNo = Integer.parseInt(s.get(2));
 
 		//hacky method dont really know how this works 1:login 2:make it wait 3:click inbox 4:click a order 5:go deeper 6:make sure you have actually gone deeper 7:read order
@@ -173,6 +173,7 @@ public class Scrapper extends Application {
 								{
 									System.out.println("Creating XLS");
 									EDA.createAllXLS(listOfEda);
+									stage.close();
 									webPos = 8;
 								}
 								else
@@ -331,13 +332,14 @@ public class Scrapper extends Application {
 
 	}
 
+	//test with console
 	public static void main(String[] args) {
 
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Enter page up to where you need");
 		int page = scanner.nextInt();
 		System.out.println("Enter place on the page up to where you need (1- 10)");
-		int placeOnPage = scanner.nextInt() - 1;
+		int placeOnPage = scanner.nextInt();
 		System.out.println("Enter the next sequence number");
 		int seqNO = scanner.nextInt();
 
