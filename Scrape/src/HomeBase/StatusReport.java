@@ -33,21 +33,20 @@ public class StatusReport {
 			HSSFWorkbook workBook = new HSSFWorkbook (fileSystem);
 
 			HSSFSheet sheet  = workBook.getSheetAt (1);
-			Row row = sheet.createRow(4);
-			row.createCell(7).setCellValue("CanadianSpaCompany");
-			row = sheet.createRow(3);
-			row.createCell(7).setCellValue("CanadianSpaCompany");
+			sheet.getRow(4).getCell(7).setCellValue("CanadianSpaCompany");
+			sheet.getRow(3).getCell(7).setCellValue("CanadianSpaCompany");
+			
 			
 			int cRow = 1;
 			for(int z = 0; z < listOfReports.size(); z ++)
 			{
 				System.out.println(listOfReports.size());
-				row = sheet.createRow(7);
+				Row row = sheet.getRow(7);
 				StatusReport cReport = listOfReports.get(z);
-				row.createCell(1).setCellValue(cReport.orderNumber);
-				row.createCell(2).setCellValue("C50");
-				row.createCell(3).setCellValue(cReport.transactionDate);
-				row.createCell(6).setCellValue(cReport.originalCustomerOrderNumber);
+				row.getCell(1).setCellValue(cReport.orderNumber);
+				row.getCell(2).setCellValue("C50");
+				row.getCell(3).setCellValue(cReport.transactionDate);
+				row.getCell(6).setCellValue(cReport.originalCustomerOrderNumber);
 				
 			}
 			FileOutputStream fileOut1 = new FileOutputStream(listOfReports.get(0).orderNumber + " to " + listOfReports.get(listOfReports.size() -1).orderNumber + ".xls");
