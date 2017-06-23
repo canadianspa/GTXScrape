@@ -24,7 +24,7 @@ public class Scrapper extends Application {
 	int lastPlace;
 	
 	WebEngine webEngine;
-	ArrayList<StatusReport> listOfEda = new ArrayList<StatusReport>();
+	ArrayList<StatusReport> listOfReports = new ArrayList<StatusReport>();
 
 
 	@Override
@@ -141,7 +141,7 @@ public class Scrapper extends Application {
 								if(isHomeBase(html))
 								{
 									StatusReport myEDA = Scrapper.this.readHomeBaseHTML(html);
-									listOfEda.add(myEDA);
+									listOfReports.add(myEDA);
 									//myEDA.createXLS();
 									
 
@@ -154,7 +154,7 @@ public class Scrapper extends Application {
 								if (placeOnPage > lastPlace && page >= lastPage)
 								{
 									System.out.println("Creating XLS");
-									System.out.println("do something");
+									StatusReport.createStatusReport(listOfReports);
 									stage.close();
 									webPos = 8;
 								}
@@ -220,9 +220,7 @@ public class Scrapper extends Application {
 		transactionDate = html.substring(html.indexOf("DELIVER BY") + 85, html.indexOf("<", html.indexOf("DELIVER BY")+85));
 		System.out.println(transactionDate);
 		
-		return null;
-
-		//return new StatusReport(orderNumber,transactionDate,originalCustomerOrderNumber);
+		return new StatusReport(orderNumber,transactionDate,originalCustomerOrderNumber);
 
 
 	}
