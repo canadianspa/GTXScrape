@@ -4,6 +4,8 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.text.Document;
@@ -33,14 +35,25 @@ import javafx.stage.Stage;
 
 public class Scrapper extends Application {
 	int page =1;
-	int placeOnPage = 9;
+	int seqNo;
+	int placeOnPage = 0;
 	int webPos = 1;
+	int lastPage;
+	int lastPlace;
 	WebEngine webEngine;
-	
-	
+	ArrayList<EDA> listOfEda = new ArrayList<EDA>();
+
+
 	@Override
 	public void start(final Stage stage) {
-		
+
+		//set start variables
+		Parameters p = getParameters();
+		List<String> s = p.getRaw();
+		lastPage = Integer.parseInt(s.get(0));
+		lastPlace = Integer.parseInt(s.get(1));
+		seqNo = Integer.parseInt(s.get(2));
+
 		//hacky method dont really know how this works 1:login 2:make it wait 3:click inbox 4:click a order 5:go deeper 6:make sure you have actually gone deeper 7:read order
 		stage.setWidth(700);
 		stage.setHeight(700);
@@ -64,7 +77,7 @@ public class Scrapper extends Application {
 									webEngine.executeScript("form.User.value='***REMOVED***'; form.Password.value='***REMOVED***';form.submit.click();");
 									webPos = 2;
 								} catch (Exception e) {
-									
+
 									e.printStackTrace();
 								}
 							}
@@ -77,23 +90,38 @@ public class Scrapper extends Application {
 								} catch (Exception e) {
 									webPos =3;
 								}
-								
+
 							}
 							//click inbox
 							if(webPos ==3)
 							{
-								
-								webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com/edi-bin/EdiMailboxFrameset.pl?lang=en&box_type=in', '_self' )");
+
+								if(page ==1)
+								{
+									webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com/edi-bin/EdiMailboxFrameset.pl?lang=en&box_type=in', '_self' )");
+								}
+								else
+								{
+									webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailbox.pl?NextDocListed=Next&LastStartNum=" + (((page-2)*10)+1) + "&box_type=in&lang=en&sort_var=");
+								}
 								webPos =4;
-									
-								
+
+
 							}
 							//click top link
 							if(webPos ==4)
 							{								
 								try {
-									webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com' + Content.form.ReadUrl" + placeOnPage + ".value,'_self')");
-									placeOnPage -= 1;
+									if(page == 1)
+									{
+										webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com' + Content.form.ReadUrl" + placeOnPage + ".value,'_self')");
+									}
+									else
+									{
+										webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com' + form.ReadUrl" + placeOnPage + ".value,'_self')");
+									}
+
+									placeOnPage += 1;
 									webPos = 5;
 								} catch (Exception e) {
 								}
@@ -101,27 +129,27 @@ public class Scrapper extends Application {
 							//go to inner html doc
 							if(webPos ==5)
 							{
-						
+
 								try
 								{
-								webEngine.executeScript("window.open(MAINAREA.location,'_self')");
-								webPos = 6;
-								
+									webEngine.executeScript("window.open(MAINAREA.location,'_self')");
+									webPos = 6;
+
 								} catch (Exception e) {
 								}
-								
+
 							}
 							//make sure that its actually there 
 							if(webPos ==6)
 							{
-						
+
 								try
 								{
-								webEngine.executeScript("window.open(MAINAREA.location,'_self')");
+									webEngine.executeScript("window.open(MAINAREA.location,'_self')");
 								} catch (Exception e) {
-								webPos = 7;
+									webPos = 7;
 								}
-								
+
 							}
 							//
 							//read it
@@ -131,16 +159,55 @@ public class Scrapper extends Application {
 								if(isBNQ(html))
 								{
 									EDA myEDA = Scrapper.this.readBNQHTML(html);
-									myEDA.createXLS();
-									EDA.seqNo = String.valueOf(Integer.parseInt(EDA.seqNo) + 1);
-									
+									listOfEda.add(myEDA);
+									//myEDA.createXLS();
+									//seqNo += 1;
+
 								}
-								
-								webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailboxFrameset.pl?lang=en&box_type=in");
-								webPos = 4;
+
+								System.out.println("At Page " + page);
+								System.out.println("At Place " + placeOnPage);
+
+								//if at the last place and page stop
+								if (placeOnPage > lastPlace && page >= lastPage)
+								{
+									System.out.println("Creating XLS");
+									EDA.createAllXLS(listOfEda);
+									webPos = 8;
+								}
+								else
+								{
+
+									//go to next page
+									if(placeOnPage == 10)
+									{
+
+										placeOnPage = 0;
+										page += 1;
+
+										webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailbox.pl?NextDocListed=Next&LastStartNum=" + (((page-2)*10)+1) + "&box_type=in&lang=en&sort_var=");
+										webPos = 4;
+
+									}
+									//go back
+									else
+									{
+										if(page ==1)
+										{
+											webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailboxFrameset.pl?lang=en&box_type=in");
+										}
+										else
+										{
+											webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailbox.pl?NextDocListed=Next&LastStartNum=" + (((page-2)*10)+1) + "&box_type=in&lang=en&sort_var=");
+
+										}
+										webPos = 4;
+									}
+								}
 
 							}
-							
+
+
 						}
 					}
 				});
@@ -151,8 +218,9 @@ public class Scrapper extends Application {
 
 		stage.setScene(scene);
 		stage.show();
+
 	}
-	
+
 	public boolean isBNQ(String html)
 	{
 		return html.contains("BnQ");
@@ -167,7 +235,7 @@ public class Scrapper extends Application {
 		ArrayList<String> qty1 = new ArrayList<String>();
 		String dateOrderPlaced, delDate;
 		String custAdd1,custAdd2,custAdd3,custAdd4,custPostCode;
-		
+
 		storeCode = html.substring(html.indexOf("hfStoreLocCode") + 25, html.indexOf(">", html.indexOf("hfStoreLocCode")+25)-1);
 		purchOrderNo = html.substring(html.indexOf("PURCHASE ORDER NO") + 162, html.indexOf("&", html.indexOf("PURCHASE ORDER NO")+162));
 		custTellNo1 = html.substring(html.indexOf("PHONE-DAY") + 166, html.indexOf("&", html.indexOf("PHONE-DAY")+166));
@@ -180,13 +248,13 @@ public class Scrapper extends Application {
 		String custDetail = html.substring(html.indexOf("ADDRESS - HOME DELIVERY"), html.indexOf("CONTACT"));
 		String[] custDetailSplit = custDetail.split("<tr>");
 		String[] custInfo = new String[5]; 
-		
+
 		//all the actual information 
 		for(int i = 2; i < 7; i++)
 		{
 			custInfo[i -2] = custDetailSplit[i].substring(103, custDetailSplit[i].indexOf("&",103));
 		}
-		
+
 		//if the information is empty shift postcode
 		int numOfAddrLines = 4;
 		for(int i = 4;i >= 0; i--)
@@ -196,7 +264,7 @@ public class Scrapper extends Application {
 				numOfAddrLines = i - 1;
 			}
 		}
-		
+
 		if(numOfAddrLines == 0)
 		{
 			custAdd1 = "";
@@ -246,9 +314,9 @@ public class Scrapper extends Application {
 			custAdd4 = "";
 			custPostCode = "";
 		}
-		
+
 		//need to split by <!-- Begin Detail Line -->
-		
+
 		String[] lines = html.split("<!-- Begin Detail Line -->");
 		for(int i = 1; i < lines.length; i ++)
 		{
@@ -257,18 +325,30 @@ public class Scrapper extends Application {
 			qty1.add(lines[i].substring(191, lines[i].indexOf("&",191)));
 
 		}
-		
-		return new EDA( storeCode,  purchOrderNo,  custTellNo1, bQSuppNo,custName,  eanCode1,  desc1,  qty1,dateOrderPlaced,delDate,custAdd1,custAdd2,custAdd3,custAdd4,custPostCode);
-	
-		
+
+		return new EDA(String.valueOf(seqNo), storeCode,  purchOrderNo,  custTellNo1, bQSuppNo,custName,  eanCode1,  desc1,  qty1,dateOrderPlaced,delDate,custAdd1,custAdd2,custAdd3,custAdd4,custPostCode);
+
+
 	}
 
 	public static void main(String[] args) {
-		
-		Scrapper.launch();
-		
+
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Enter page up to where you need");
+		int page = scanner.nextInt();
+		System.out.println("Enter place on the page up to where you need (1- 10)");
+		int placeOnPage = scanner.nextInt() - 1;
+		System.out.println("Enter the next sequence number");
+		int seqNO = scanner.nextInt();
+
+		String[] myArg = new String[3];
+		myArg[0] = String.valueOf(page);
+		myArg[1] = String.valueOf(placeOnPage);
+		myArg[2] = String.valueOf(seqNO);
+		Scrapper.launch(myArg);
+
 
 	}
-	
-	
+
+
 }
