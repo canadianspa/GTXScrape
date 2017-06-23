@@ -1,26 +1,9 @@
+package HomeBase;
 
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
-
-import javax.swing.text.Document;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Element;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -35,13 +18,13 @@ import javafx.stage.Stage;
 
 public class Scrapper extends Application {
 	int page =1;
-	int seqNo;
 	int placeOnPage = 0;
 	int webPos = 1;
 	int lastPage;
 	int lastPlace;
+	
 	WebEngine webEngine;
-	ArrayList<EDA> listOfEda = new ArrayList<EDA>();
+	ArrayList<StatusReport> listOfEda = new ArrayList<StatusReport>();
 
 
 	@Override
@@ -52,7 +35,6 @@ public class Scrapper extends Application {
 		List<String> s = p.getRaw();
 		lastPage = Integer.parseInt(s.get(0));
 		lastPlace = Integer.parseInt(s.get(1)) - 1;
-		seqNo = Integer.parseInt(s.get(2));
 
 		//hacky method dont really know how this works 1:login 2:make it wait 3:click inbox 4:click a order 5:go deeper 6:make sure you have actually gone deeper 7:read order
 		stage.setWidth(700);
@@ -156,12 +138,12 @@ public class Scrapper extends Application {
 							if(webPos ==7)
 							{
 								String html = (String) webEngine.executeScript("document.documentElement.outerHTML");
-								if(isBNQ(html))
+								if(isHomeBase(html))
 								{
-									EDA myEDA = Scrapper.this.readBNQHTML(html);
+									StatusReport myEDA = Scrapper.this.readHomeBaseHTML(html);
 									listOfEda.add(myEDA);
 									//myEDA.createXLS();
-									//seqNo += 1;
+									
 
 								}
 
@@ -172,7 +154,7 @@ public class Scrapper extends Application {
 								if (placeOnPage > lastPlace && page >= lastPage)
 								{
 									System.out.println("Creating XLS");
-									EDA.createAllXLS(listOfEda);
+									System.out.println("do something");
 									stage.close();
 									webPos = 8;
 								}
@@ -222,112 +204,25 @@ public class Scrapper extends Application {
 
 	}
 
-	public boolean isBNQ(String html)
+	public boolean isHomeBase(String html)
 	{
-		return html.contains("BnQ");
+		return html.contains("HOMEBASE");
 	}
 	//takes certain webpage as a html and ouputs bnq stuff
-	public EDA readBNQHTML(String html)
+	public StatusReport readHomeBaseHTML(String html)
 	{
-		//System.out.println(html);
-		String storeCode,purchOrderNo,custTellNo1,bQSuppNo,custName;
-		ArrayList<String> eanCode1 = new ArrayList<String>();
-		ArrayList<String> desc1 = new ArrayList<String>();
-		ArrayList<String> qty1 = new ArrayList<String>();
-		String dateOrderPlaced, delDate;
-		String custAdd1,custAdd2,custAdd3,custAdd4,custPostCode;
+		String orderNumber,transactionDate,originalCustomerOrderNumber;
 
-		storeCode = html.substring(html.indexOf("hfStoreLocCode") + 25, html.indexOf(">", html.indexOf("hfStoreLocCode")+25)-1);
-		purchOrderNo = html.substring(html.indexOf("PURCHASE ORDER NO") + 162, html.indexOf("&", html.indexOf("PURCHASE ORDER NO")+162));
-		custTellNo1 = html.substring(html.indexOf("PHONE-DAY") + 166, html.indexOf("&", html.indexOf("PHONE-DAY")+166));
-		bQSuppNo = html.substring(html.indexOf("VENDOR") + 155, html.indexOf("&", html.indexOf("VENDOR")+155));
-		custName = html.substring(html.indexOf("ADDRESS - HOME DELIVERY") + 183, html.indexOf("&", html.indexOf("ADDRESS - HOME DELIVERY")+183));
-		dateOrderPlaced = html.substring(html.indexOf("PURCHASE ORDER DATE") + 164, html.indexOf("&", html.indexOf("PURCHASE ORDER DATE")+164));
-		dateOrderPlaced = dateOrderPlaced.replace(".", "/");
-		delDate = html.substring(html.indexOf("DELIVERY DATE") + 158, html.indexOf("&", html.indexOf("DELIVERY DATE")+158));
-		delDate = delDate.replace(".", "/");
-		String custDetail = html.substring(html.indexOf("ADDRESS - HOME DELIVERY"), html.indexOf("CONTACT"));
-		String[] custDetailSplit = custDetail.split("<tr>");
-		String[] custInfo = new String[5]; 
+		orderNumber = html.substring(html.indexOf("END OF ORDER") + 13, html.indexOf("<", html.indexOf("END OF ORDER")+13));
+		System.out.println(orderNumber);
+		originalCustomerOrderNumber = html.substring(html.indexOf("CUSTOMER ORDER") + 90, html.indexOf("<", html.indexOf("CUSTOMER ORDER")+90));
+		System.out.println(originalCustomerOrderNumber);
+		transactionDate = html.substring(html.indexOf("DELIVER BY") + 86, html.indexOf("<", html.indexOf("DELIVER BY")+86));
+		System.out.println(transactionDate);
+		
+		return null;
 
-		//all the actual information 
-		for(int i = 2; i < 7; i++)
-		{
-			custInfo[i -2] = custDetailSplit[i].substring(103, custDetailSplit[i].indexOf("&",103));
-		}
-
-		//if the information is empty shift postcode
-		int numOfAddrLines = 4;
-		for(int i = 4;i >= 0; i--)
-		{
-			if(custInfo[i].equals(""))
-			{
-				numOfAddrLines = i - 1;
-			}
-		}
-
-		if(numOfAddrLines == 0)
-		{
-			custAdd1 = "";
-			custAdd2 = "";
-			custAdd3 = "";
-			custAdd4 = "";
-			custPostCode = custInfo[0];
-		}
-		else if(numOfAddrLines == 1)
-		{
-			custAdd1 = custInfo[0];
-			custAdd2 = "";
-			custAdd3 = "";
-			custAdd4 = "";
-			custPostCode = custInfo[1];
-		}
-		else if(numOfAddrLines == 2)
-		{
-			custAdd1 = custInfo[0];
-			custAdd2 = custInfo[1];
-			custAdd3 = "";
-			custAdd4 = "";
-			custPostCode = custInfo[2];
-		}
-		else if(numOfAddrLines == 3)
-		{
-			custAdd1 = custInfo[0];
-			custAdd2 = custInfo[1];
-			custAdd3 = custInfo[2];
-			custAdd4 = "";
-			custPostCode = custInfo[3];
-		}
-		else if(numOfAddrLines == 4)
-		{
-			custAdd1 = custInfo[0];
-			custAdd2 = custInfo[1];
-			custAdd3 = custInfo[2];
-			custAdd4 = custInfo[3];
-			custPostCode = custInfo[4];
-		}
-		else
-		{
-			System.out.println("No Address Lines?");
-			custAdd1 = "";
-			custAdd2 = "";
-			custAdd3 = "";
-			custAdd4 = "";
-			custPostCode = "";
-		}
-
-		//need to split by <!-- Begin Detail Line -->
-
-		String[] lines = html.split("<!-- Begin Detail Line -->");
-		for(int i = 1; i < lines.length; i ++)
-		{
-			eanCode1.add(lines[i].substring(lines[i].indexOf("EA&n") + 90, lines[i].indexOf("&", lines[i].indexOf("EA&n")+90))); 
-			desc1.add(lines[i].substring(lines[i].indexOf("EA&n") + 333, lines[i].indexOf("&", lines[i].indexOf("EA&n")+333)));
-			qty1.add(lines[i].substring(191, lines[i].indexOf("&",191)));
-
-		}
-
-		return new EDA(String.valueOf(seqNo), storeCode,  purchOrderNo,  custTellNo1, bQSuppNo,custName,  eanCode1,  desc1,  qty1,dateOrderPlaced,delDate,custAdd1,custAdd2,custAdd3,custAdd4,custPostCode);
+		//return new StatusReport(orderNumber,transactionDate,originalCustomerOrderNumber);
 
 
 	}
@@ -340,13 +235,10 @@ public class Scrapper extends Application {
 		int page = scanner.nextInt();
 		System.out.println("Enter place on the page up to where you need (1- 10)");
 		int placeOnPage = scanner.nextInt();
-		System.out.println("Enter the next sequence number");
-		int seqNO = scanner.nextInt();
 
 		String[] myArg = new String[3];
 		myArg[0] = String.valueOf(page);
 		myArg[1] = String.valueOf(placeOnPage);
-		myArg[2] = String.valueOf(seqNO);
 		Scrapper.launch(myArg);
 
 

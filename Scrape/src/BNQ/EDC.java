@@ -1,3 +1,4 @@
+package BNQ;
 import java.util.ArrayList;
 
 public class EDC {
