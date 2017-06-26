@@ -1,8 +1,11 @@
 package HomeBase;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -88,9 +91,25 @@ public class StatusReport {
 			}
 			
 			HSSFFormulaEvaluator.evaluateAllFormulaCells(workBook);
-			
 			FileOutputStream fileOut1 = new FileOutputStream("HOMEBASE STATUS UPDATE.xls");
             workBook.write(fileOut1);
+            
+            
+  
+            //create HB1
+            
+            sheet  = workBook.getSheetAt (2); 
+            try {
+                File file = new File("Canadian-Spa-Company.HB1");
+                BufferedWriter  output = new BufferedWriter(new FileWriter(file));
+                output.write(sheet.getcol);
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            } finally {
+              if ( output != null ) {
+                output.close();
+              }
+            }
             fileOut1.close();
             System.out.println("status report created");
 		} catch (FileNotFoundException e) {
