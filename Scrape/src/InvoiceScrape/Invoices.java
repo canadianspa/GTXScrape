@@ -47,7 +47,7 @@ public class Invoices {
 			FileOutputStream fileOut1 = new FileOutputStream(listOfInvoices.get(0).purchOrNo + " to " + listOfInvoices.get(listOfInvoices.size() -1).purchOrNo + ".xls");
             workBook.write(fileOut1);
             fileOut1.close();
-            System.out.println("status report created");
+            System.out.println("invoice report created");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
