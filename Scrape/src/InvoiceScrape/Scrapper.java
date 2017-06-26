@@ -1,4 +1,4 @@
-package HomeBase;
+package InvoiceScrape;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ public class Scrapper extends Application {
 	int lastPlace;
 	
 	WebEngine webEngine;
-	ArrayList<StatusReport> listOfReports = new ArrayList<StatusReport>();
+	ArrayList<Invoices> listOfReports = new ArrayList<Invoices>();
 
 
 	@Override
@@ -80,11 +80,11 @@ public class Scrapper extends Application {
 
 								if(page ==1)
 								{
-									webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com/edi-bin/EdiMailboxFrameset.pl?lang=en&box_type=in', '_self' )");
+									webEngine.executeScript("window.open('https://gxstradeweb.gxsolc.com/edi-bin/EdiMailboxFrameset.pl?lang=en&box_type=sent', '_self' )");
 								}
 								else
 								{
-									webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailbox.pl?NextDocListed=Next&LastStartNum=" + (((page-2)*10)+1) + "&box_type=in&lang=en&sort_var=");
+									webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailbox.pl?NextDocListed=Next&LastStartNum=" + (((page-2)*10)+1) + "&box_type=sent&lang=en&sort_var=");
 								}
 								webPos =4;
 
@@ -138,9 +138,9 @@ public class Scrapper extends Application {
 							if(webPos ==7)
 							{
 								String html = (String) webEngine.executeScript("document.documentElement.outerHTML");
-								if(isHomeBase(html))
+								if(isBNQ(html))
 								{
-									StatusReport myEDA = Scrapper.this.readHomeBaseHTML(html);
+									Invoices myEDA = Scrapper.this.readInvoices(html);
 									listOfReports.add(myEDA);
 									//myEDA.createXLS();
 									
@@ -154,7 +154,7 @@ public class Scrapper extends Application {
 								if (placeOnPage > lastPlace && page >= lastPage)
 								{
 									System.out.println("Creating XLS");
-									StatusReport.createStatusReport(listOfReports);
+									Invoices.createInvoices(listOfReports);
 									stage.close();
 									webPos = 8;
 								}
@@ -168,7 +168,7 @@ public class Scrapper extends Application {
 										placeOnPage = 0;
 										page += 1;
 
-										webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailbox.pl?NextDocListed=Next&LastStartNum=" + (((page-2)*10)+1) + "&box_type=in&lang=en&sort_var=");
+										webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailbox.pl?NextDocListed=Next&LastStartNum=" + (((page-2)*10)+1) + "&box_type=sent&lang=en&sort_var=");
 										webPos = 4;
 
 									}
@@ -177,11 +177,11 @@ public class Scrapper extends Application {
 									{
 										if(page ==1)
 										{
-											webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailboxFrameset.pl?lang=en&box_type=in");
+											webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailboxFrameset.pl?lang=en&box_type=sent");
 										}
 										else
 										{
-											webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailbox.pl?NextDocListed=Next&LastStartNum=" + (((page-2)*10)+1) + "&box_type=in&lang=en&sort_var=");
+											webEngine.load("https://gxstradeweb.gxsolc.com/edi-bin/EdiMailbox.pl?NextDocListed=Next&LastStartNum=" + (((page-2)*10)+1) + "&box_type=sent&lang=en&sort_var=");
 
 										}
 										webPos = 4;
@@ -204,23 +204,25 @@ public class Scrapper extends Application {
 
 	}
 
-	public boolean isHomeBase(String html)
+	public boolean isBNQ(String html)
 	{
-		return html.contains("HOMEBASE");
+		return html.contains("BnQ");
 	}
 	//takes certain webpage as a html and ouputs bnq stuff
-	public StatusReport readHomeBaseHTML(String html)
+	public Invoices readInvoices(String html)
 	{
-		String orderNumber,transactionDate,originalCustomerOrderNumber;
+		String invoiceNo,purchOrNo,invDate;
 		//CUSTOMER ORDER seems wrong
-		orderNumber = html.substring(html.indexOf("END OF ORDER") + 13, html.indexOf("<", html.indexOf("END OF ORDER")+13));
-		System.out.println(orderNumber);
-		originalCustomerOrderNumber = html.substring(html.indexOf("CUSTOMER ORDER") + 90, html.indexOf("<", html.indexOf("CUSTOMER ORDER")+90)-1);
-		System.out.println(originalCustomerOrderNumber);
-		transactionDate = html.substring(html.indexOf("DELIVER BY") + 85, html.indexOf("<", html.indexOf("DELIVER BY")+85));
-		System.out.println(transactionDate);
+		html = html.replace("\n", "").replace("\r", "");
+		invoiceNo = html.substring(html.indexOf("Invoice No") + 89, html.indexOf("&", html.indexOf("Invoice No")+89));
+		System.out.println(invoiceNo);
+		purchOrNo = html.substring(html.indexOf("Purchase Order No") + 96, html.indexOf("&", html.indexOf("Purchase Order No")+96));
+		System.out.println(purchOrNo);
+		invDate = html.substring(html.indexOf("Invoice Date") + 91, html.indexOf("&", html.indexOf("Invoice Date")+91));
+		invDate = invDate.replace(".", "/");
+		System.out.println(invDate);
 		
-		return new StatusReport(orderNumber,transactionDate,originalCustomerOrderNumber);
+		return new Invoices(invoiceNo,purchOrNo,invDate);
 
 
 	}

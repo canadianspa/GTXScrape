@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 public class StatusReport {
@@ -37,16 +38,19 @@ public class StatusReport {
 			sheet.getRow(3).getCell(7).setCellValue("CanadianSpaCompany");
 			
 			
-			int cRow = 1;
+			int cRow = 7;
 			for(int z = 0; z < listOfReports.size(); z ++)
 			{
 				System.out.println(listOfReports.size());
-				Row row = sheet.getRow(7);
+				Row row = sheet.getRow(cRow);
 				StatusReport cReport = listOfReports.get(z);
 				row.getCell(1).setCellValue(cReport.orderNumber);
-				row.getCell(2).setCellValue("C50");
+				row.getCell(2).setCellValue("C30");
 				row.getCell(3).setCellValue(cReport.transactionDate);
+				row.getCell(6).setCellType(Cell.CELL_TYPE_STRING);
 				row.getCell(6).setCellValue(cReport.originalCustomerOrderNumber);
+				
+				cRow +=1;
 				
 			}
 			FileOutputStream fileOut1 = new FileOutputStream(listOfReports.get(0).orderNumber + " to " + listOfReports.get(listOfReports.size() -1).orderNumber + ".xls");

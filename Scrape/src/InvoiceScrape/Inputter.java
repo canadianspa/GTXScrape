@@ -1,4 +1,4 @@
-package HomeBase;
+package InvoiceScrape;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
