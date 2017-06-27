@@ -14,14 +14,18 @@ import org.apache.poi.ss.usermodel.Row;
 
 public class Invoices {
 
-	String invoiceNo,purchOrNo,invDate;
-
-	public Invoices(String invoiceNo, String purchOrNo, String invDate) {
+	String invoiceNo,purchOrNo,invDate,delDate;
+	int amountOut;
+	
+	public Invoices(String invoiceNo, String purchOrNo, String invDate, String delDate, String amountOut) {
 		super();
 		this.invoiceNo = invoiceNo;
 		this.purchOrNo = purchOrNo;
 		this.invDate = invDate;
+		this.delDate = delDate;
+		this.amountOut = Integer.parseInt(amountOut);
 	}
+
 
 	public static void createInvoices(ArrayList<Invoices> listOfInvoices)
 	{

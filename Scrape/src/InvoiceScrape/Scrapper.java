@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import BNQ.EDA;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -18,7 +19,7 @@ import javafx.stage.Stage;
 
 public class Scrapper extends Application {
 	int page =1;
-	int placeOnPage = 0;
+	int placeOnPage = 7;
 	int webPos = 1;
 	int lastPage;
 	int lastPlace;
@@ -141,8 +142,30 @@ public class Scrapper extends Application {
 								if(isBNQ(html))
 								{
 									Invoices myEDA = Scrapper.this.readInvoices(html);
-									listOfReports.add(myEDA);
-									//myEDA.createXLS();
+									boolean seenBefore =false;
+									for(Invoices e : listOfReports)
+									{
+										if(e.purchOrNo.equals(myEDA.purchOrNo))
+										{
+											seenBefore = true;
+										}
+									}
+									if(seenBefore)
+									{
+										if(lastPlace == 9)
+										{
+											lastPage += 1;
+											lastPlace = 0;
+										}
+										else
+										{
+											lastPlace += 1;
+										}
+									}
+									else
+									{
+										listOfReports.add(myEDA);
+									}
 									
 
 								}
@@ -211,7 +234,7 @@ public class Scrapper extends Application {
 	//takes certain webpage as a html and ouputs bnq stuff
 	public Invoices readInvoices(String html)
 	{
-		String invoiceNo,purchOrNo,invDate;
+		String invoiceNo,purchOrNo,invDate,delDate,amountOut;
 		//CUSTOMER ORDER seems wrong
 		html = html.replace("\n", "").replace("\r", "");
 		invoiceNo = html.substring(html.indexOf("Invoice No") + 89, html.indexOf("&", html.indexOf("Invoice No")+89));
@@ -221,8 +244,14 @@ public class Scrapper extends Application {
 		invDate = html.substring(html.indexOf("Invoice Date") + 91, html.indexOf("&", html.indexOf("Invoice Date")+91));
 		invDate = invDate.replace(".", "/");
 		System.out.println(invDate);
+		delDate = html.substring(html.indexOf("Delivery Date") + 91, html.indexOf("&", html.indexOf("Delivery Date")+91));
+		delDate = delDate.replace(".", "/");
+		System.out.println(delDate);
+		amountOut = html.substring(html.indexOf("Sub-Total") + 112, html.indexOf("&", html.indexOf("Sub-Total")+112));
+		System.out.println(amountOut);
 		
-		return new Invoices(invoiceNo,purchOrNo,invDate);
+		
+		return new Invoices(invoiceNo,purchOrNo,invDate,delDate,amountOut);
 
 
 	}

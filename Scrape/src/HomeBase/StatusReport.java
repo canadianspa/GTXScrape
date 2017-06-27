@@ -41,7 +41,7 @@ public class StatusReport {
 
 			HSSFWorkbook workBook = new HSSFWorkbook (fileSystem);
 
-			HSSFSheet sheet  = workBook.getSheetAt (1);
+			HSSFSheet sheet  = workBook.getSheetAt(1);
 			
 			
 			//find C30 and keepem
