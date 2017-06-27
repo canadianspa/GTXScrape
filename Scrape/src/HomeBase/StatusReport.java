@@ -94,22 +94,6 @@ public class StatusReport {
 			FileOutputStream fileOut1 = new FileOutputStream("HOMEBASE STATUS UPDATE.xls");
             workBook.write(fileOut1);
             
-            
-  
-            //create HB1
-            
-            sheet  = workBook.getSheetAt (2); 
-            try {
-                File file = new File("Canadian-Spa-Company.HB1");
-                BufferedWriter  output = new BufferedWriter(new FileWriter(file));
-                output.write(sheet.getcol);
-            } catch ( IOException e ) {
-                e.printStackTrace();
-            } finally {
-              if ( output != null ) {
-                output.close();
-              }
-            }
             fileOut1.close();
             System.out.println("status report created");
 		} catch (FileNotFoundException e) {

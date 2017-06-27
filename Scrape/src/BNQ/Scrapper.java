@@ -22,7 +22,6 @@ public class Scrapper extends Application {
 	int webPos = 1;
 	int lastPage;
 	int lastPlace;
-	
 	WebEngine webEngine;
 	ArrayList<EDA> listOfEda = new ArrayList<EDA>();
 
@@ -142,7 +141,32 @@ public class Scrapper extends Application {
 								if(isBNQ(html))
 								{
 									EDA myEDA = Scrapper.this.readBNQHTML(html);
-									listOfEda.add(myEDA);
+									//make sure havent already seen it
+									boolean seenBefore =false;
+									for(EDA e : listOfEda)
+									{
+										if(e.purchOrderNo.equals(myEDA.purchOrderNo))
+										{
+											seenBefore = true;
+										}
+									}
+									if(seenBefore)
+									{
+										if(lastPlace == 9)
+										{
+											lastPage += 1;
+											lastPlace = 0;
+										}
+										else
+										{
+											lastPlace += 1;
+										}
+									}
+									else
+									{
+										listOfEda.add(myEDA);
+									}
+									
 									//myEDA.createXLS();
 									//seqNo += 1;
 

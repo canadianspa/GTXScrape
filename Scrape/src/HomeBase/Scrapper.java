@@ -90,7 +90,7 @@ public class Scrapper extends Application {
 
 
 							}
-							//click top link
+							//click a link
 							if(webPos ==4)
 							{								
 								try {
@@ -141,7 +141,32 @@ public class Scrapper extends Application {
 								if(isHomeBase(html))
 								{
 									StatusReport myEDA = Scrapper.this.readHomeBaseHTML(html);
-									listOfReports.add(myEDA);
+									//make sure havent already seen it
+									boolean seenBefore =false;
+									for(StatusReport e : listOfReports)
+									{
+										if(e.orderNumber.equals(myEDA.orderNumber))
+										{
+											seenBefore = true;
+										}
+									}
+									if(seenBefore)
+									{
+										if(lastPlace == 9)
+										{
+											lastPage += 1;
+											lastPlace = 0;
+										}
+										else
+										{
+											lastPlace += 1;
+										}
+									}
+									else
+									{
+										listOfReports.add(myEDA);
+									}
+									
 									//myEDA.createXLS();
 									
 
@@ -212,7 +237,6 @@ public class Scrapper extends Application {
 	public StatusReport readHomeBaseHTML(String html)
 	{
 		String orderNumber,transactionDate,originalCustomerOrderNumber;
-		//CUSTOMER ORDER seems wrong
 		orderNumber = html.substring(html.indexOf("END OF ORDER") + 13, html.indexOf("<", html.indexOf("END OF ORDER")+13));
 		System.out.println(orderNumber);
 		originalCustomerOrderNumber = html.substring(html.indexOf("CUSTOMER ORDER") + 90, html.indexOf("<", html.indexOf("CUSTOMER ORDER")+90)-1);
