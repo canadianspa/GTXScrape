@@ -17,8 +17,7 @@ import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
+
 
 public class CreateHB1 {
 
@@ -26,9 +25,8 @@ public class CreateHB1 {
 
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
 		LocalDate localDate = LocalDate.now();
-		System.out.println(dtf.format(localDate));
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream("CanadianSpaCompany_" + localDate +  ".HB1"), "utf-8"))) {
+				new FileOutputStream("CanadianSpaCompany_" + dtf.format(localDate) +  ".HB1"), "utf-8"))) {
 
 			try {
 				InputStream inputStream = new FileInputStream ("HOMEBASE STATUS UPDATE.xls");
@@ -41,7 +39,7 @@ public class CreateHB1 {
 				writer.write(sheet.getRow(0).getCell(0).getStringCellValue() + System.lineSeparator());
 				for(int i = 2; i < sheet.getPhysicalNumberOfRows();i++)
 				{
-					if(!sheet.getRow(i).getCell(0).getStringCellValue().equals("00131/12/99160012345xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"))
+					if(!sheet.getRow(i).getCell(0).getStringCellValue().contains("160012345xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"))
 					{
 						writer.write(sheet.getRow(i).getCell(0).getStringCellValue() + System.lineSeparator());
 

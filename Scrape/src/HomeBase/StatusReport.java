@@ -21,7 +21,7 @@ import org.apache.poi.ss.usermodel.Row;
 
 public class StatusReport {
 
-	String orderNumber,transactionDate,originalCustomerOrderNumber;
+	String orderNumber,transactionDate,originalCustomerOrderNumber,status;
 
 	public StatusReport(String orderNumber, String transactionDate,
 			String originalCustomerOrderNumber) {
@@ -29,8 +29,18 @@ public class StatusReport {
 		this.orderNumber = orderNumber;
 		this.transactionDate = transactionDate;
 		this.originalCustomerOrderNumber = originalCustomerOrderNumber;
+		status = "C30";
 	} 
 	
+	public StatusReport(String orderNumber, String transactionDate,
+			String originalCustomerOrderNumber, String status) {
+		super();
+		this.orderNumber = orderNumber;
+		this.transactionDate = transactionDate;
+		this.originalCustomerOrderNumber = originalCustomerOrderNumber;
+		this.status = status;
+	} 
+
 	public static void createStatusReport(ArrayList<StatusReport> listOfReports)
 	{
 		SimpleDateFormat form = new SimpleDateFormat("dd/MM/yyyy");
@@ -42,26 +52,37 @@ public class StatusReport {
 			HSSFWorkbook workBook = new HSSFWorkbook (fileSystem);
 
 			HSSFSheet sheet  = workBook.getSheetAt(1);
-			
-			
+
+
 			//find C30 and keepem
 			for(int i = 0; i < sheet.getPhysicalNumberOfRows() -7;i++)
 			{
 				Row row = sheet.getRow(i + 7);
-				if(row.getCell(2).getStringCellValue().equals("C30"))
-				{
-					String orderNumber,transactionDate,originalCustomerOrderNumber;
-					orderNumber = row.getCell(1).getStringCellValue();
-					transactionDate = (form.format(row.getCell(3).getDateCellValue()));
-					originalCustomerOrderNumber = row.getCell(6).getStringCellValue();
-					StatusReport C30 =  new StatusReport(orderNumber,transactionDate,originalCustomerOrderNumber);
-					listOfReports.add(C30);
+				//if(row.getCell(2).getStringCellValue().equals("C30"))
+				//{
 
+				if(row.getCell(1).getStringCellValue().equals(""))
+				{
+					break;
 				}
+				else
+				{
+					String orderNumber,transactionDate,originalCustomerOrderNumber,status;
+					orderNumber = row.getCell(1).getStringCellValue();
+					status = row.getCell(2).getStringCellValue();
+					transactionDate = form.format(row.getCell(3).getDateCellValue());
+					originalCustomerOrderNumber = row.getCell(6).getStringCellValue();
+					StatusReport C30 =  new StatusReport(orderNumber,transactionDate,originalCustomerOrderNumber,status);
+					listOfReports.add(C30);
+				}
+
+
+
+				//}
 
 			}
 			inputStream.close();
-			
+
 			inputStream = new FileInputStream ("homebasetemplate.xls");
 			fileSystem = new POIFSFileSystem (inputStream);
 
@@ -76,7 +97,7 @@ public class StatusReport {
 				StatusReport cReport = listOfReports.get(z);
 				row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
 				row.getCell(1).setCellValue(cReport.orderNumber);
-				row.getCell(2).setCellValue("C30");
+				row.getCell(2).setCellValue(cReport.status);
 				try {
 					row.getCell(3).setCellValue(form.parse(cReport.transactionDate));
 				} catch (ParseException e) {
@@ -85,17 +106,17 @@ public class StatusReport {
 				}
 				row.getCell(6).setCellType(Cell.CELL_TYPE_STRING);
 				row.getCell(6).setCellValue(cReport.originalCustomerOrderNumber);
-				
+
 				cRow +=1;
-				
+
 			}
-			
+
 			HSSFFormulaEvaluator.evaluateAllFormulaCells(workBook);
 			FileOutputStream fileOut1 = new FileOutputStream("HOMEBASE STATUS UPDATE.xls");
-            workBook.write(fileOut1);
-            
-            fileOut1.close();
-            System.out.println("status report created");
+			workBook.write(fileOut1);
+
+			fileOut1.close();
+			System.out.println("status report created");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -104,5 +125,5 @@ public class StatusReport {
 			e.printStackTrace();
 		}
 	}
-	
+
 }
