@@ -243,6 +243,7 @@ public class Scrapper extends Application {
 		ArrayList<String> desc1 = new ArrayList<String>();
 		ArrayList<String> qty1 = new ArrayList<String>();
 		String dateOrderPlaced, delDate;
+		String salesNumber;
 		String custAdd1,custAdd2,custAdd3,custAdd4,custPostCode;
 
 		storeCode = html.substring(html.indexOf("hfStoreLocCode") + 25, html.indexOf(">", html.indexOf("hfStoreLocCode")+25)-1);
@@ -255,8 +256,10 @@ public class Scrapper extends Application {
 		delDate = html.substring(html.indexOf("DELIVERY DATE") + 158, html.indexOf("&", html.indexOf("DELIVERY DATE")+158));
 		delDate = delDate.replace(".", "/");
 		String custDetail = html.substring(html.indexOf("ADDRESS - HOME DELIVERY"), html.indexOf("CONTACT"));
+		salesNumber = html.substring(html.indexOf("SALES ORDER NO") + 160, html.indexOf("&", html.indexOf("SALES ORDER NO")+160));
 		String[] custDetailSplit = custDetail.split("<tr>");
 		String[] custInfo = new String[5]; 
+		
 
 		//all the actual information 
 		for(int i = 2; i < 7; i++)
@@ -335,7 +338,7 @@ public class Scrapper extends Application {
 
 		}
 
-		return new EDA(String.valueOf(seqNo), storeCode,  purchOrderNo,  custTellNo1, bQSuppNo,custName,  eanCode1,  desc1,  qty1,dateOrderPlaced,delDate,custAdd1,custAdd2,custAdd3,custAdd4,custPostCode);
+		return new EDA(String.valueOf(seqNo), storeCode,  purchOrderNo,  custTellNo1, bQSuppNo,custName,  eanCode1,  desc1,  qty1,dateOrderPlaced,delDate,custAdd1,custAdd2,custAdd3,custAdd4,custPostCode,salesNumber);
 
 
 	}

@@ -33,13 +33,14 @@ public class EDA implements Serializable {
 	ArrayList<String> eanCode1 = new ArrayList<String>();
 	ArrayList<String> desc1 = new ArrayList<String>();
 	ArrayList<String> qty1 = new ArrayList<String>();
+	String salesNumber;
 	String homestore = "HOME";
 	String poVerNo = "00001";
 
 	//no del date on the site
 	public EDA(String seqNo, String storeCode, String purchOrderNo, String custTellNo1, String bqSuppNo,
 			String custName, ArrayList<String> eanCode1, ArrayList<String> desc1, ArrayList<String> qty1,
-			String dateOrderPlaced, String delDate,String custAdd1,String custAdd2,String custAdd3,String custAdd4,String custPostCode) {
+			String dateOrderPlaced, String delDate,String custAdd1,String custAdd2,String custAdd3,String custAdd4,String custPostCode,String salesNumber) {
 		super();
 		this.seqNo = seqNo;
 		this.storeCode = storeCode;
@@ -57,6 +58,7 @@ public class EDA implements Serializable {
 		this.custAdd3 = custAdd3;
 		this.custAdd4 = custAdd4;
 		this.custPostCode = custPostCode;
+		this.salesNumber = salesNumber;
 
 	}
 	//TODO use this to make sure u dont double up dudes
@@ -121,7 +123,7 @@ public class EDA implements Serializable {
 					row.createCell(0).setCellValue(cEDA.seqNo);
 					row.createCell(1).setCellValue(cEDA.storeCode);
 					row.createCell(2).setCellValue(cEDA.purchOrderNo);
-					row.createCell(3).setCellValue(cEDA.custTellNo1);
+					row.createCell(3).setCellValue(cEDA.salesNumber);
 					row.createCell(4).setCellValue("");
 					row.createCell(5).setCellValue(cEDA.dateOrderPlaced);
 					row.createCell(6).setCellValue(cEDA.delDate);

@@ -21,7 +21,7 @@ public class EDCmaker {
 	private JTextField txt_purch;
 	private JTextField txt_invoice;
 	private JTextField txt_delDate;
-	public ArrayList<EDC> allEDC; 
+	public ArrayList<EDC> allEDC = new ArrayList<EDC>(); 
 
 	/**
 	 * Launch the application.
@@ -95,6 +95,16 @@ public class EDCmaker {
 					} catch (Exception f) {
 						alreadyGot = new ArrayList<EDA>();
 					}
+					
+					for(EDA a: alreadyGot)
+					{
+						System.out.println(a.purchOrderNo);
+						if(a.purchOrderNo.equals(txt_purch.getText()))
+						{
+							System.out.println("found one");
+							allEDC.add(new EDC(a,txt_delDate.getText(),txt_invoice.getText()));
+						}
+					}
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -108,6 +118,12 @@ public class EDCmaker {
 		frame.getContentPane().add(panel_1);
 
 		JButton btnCreateEDC = new JButton("Create EDC");
+		btnCreateEDC.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				EDC.createEDCXLS(allEDC);
+			}
+		});
 		frame.getContentPane().add(btnCreateEDC);
 	}
 
