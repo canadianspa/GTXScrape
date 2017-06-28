@@ -180,6 +180,7 @@ public class Scrapper extends Application {
 								{
 									System.out.println("Creating XLS");
 									EDA.createAllXLS(listOfEda);
+									EDA.addToEDAList(listOfEda);
 									stage.close();
 									webPos = 8;
 								}

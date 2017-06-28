@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,14 +26,13 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 
 
-public class EDA {
+public class EDA implements Serializable {
 	String seqNo,storeCode,purchOrderNo,custTellNo1,bqSuppNo,custName;
 	String delDate,dateOrderPlaced;
 	String custAdd1,custAdd2,custAdd3,custAdd4,custPostCode;
 	ArrayList<String> eanCode1 = new ArrayList<String>();
 	ArrayList<String> desc1 = new ArrayList<String>();
 	ArrayList<String> qty1 = new ArrayList<String>();
-	boolean readyToSend = false;
 	String homestore = "HOME";
 	String poVerNo = "00001";
 
@@ -57,7 +59,47 @@ public class EDA {
 		this.custPostCode = custPostCode;
 
 	}
+	//TODO use this to make sure u dont double up dudes
+	public static void addToEDAList(ArrayList<EDA> EDAs)
+	{
+		try {
+			FileInputStream fiut = new FileInputStream("all.EDA");
+			ObjectInputStream ois;
+			ArrayList<EDA> alreadyGot;
+			try {
+				//cant read first time
+				ois = new ObjectInputStream(fiut);
+				alreadyGot = (ArrayList<EDA>) ois.readObject();
+			} catch (Exception e) {
+				alreadyGot = new ArrayList<EDA>();
+			}
+			System.out.println("before");
+			for(EDA e : alreadyGot)
+			{
+				System.out.println(e.purchOrderNo);
+			}
+			alreadyGot.addAll(EDAs);
+			System.out.println("after");
 
+			for(EDA e : alreadyGot)
+			{
+				System.out.println(e.purchOrderNo);
+			}
+			
+			
+			FileOutputStream fout = new FileOutputStream("all.EDA");
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(alreadyGot);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	//TODO cust tel should be sales number for some dumb ass reason
 	public static void createAllXLS(ArrayList<EDA> EDAs)
 	{
 		int cRow = 2;
