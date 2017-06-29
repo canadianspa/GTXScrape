@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -140,36 +142,39 @@ public class Scrapper extends Application {
 								String html = (String) webEngine.executeScript("document.documentElement.outerHTML");
 								if(isHomeBase(html))
 								{
-									StatusReport myEDA = Scrapper.this.readHomeBaseHTML(html);
-									//make sure havent already seen it
-									boolean seenBefore =false;
-									for(StatusReport e : listOfReports)
-									{
-										if(e.orderNumber.equals(myEDA.orderNumber))
+									try {
+										StatusReport myEDA = Scrapper.this.readHomeBaseHTML(html);
+										//make sure havent already seen it
+										boolean seenBefore =false;
+										for(StatusReport e : listOfReports)
 										{
-											seenBefore = true;
+											if(e.orderNumber.equals(myEDA.orderNumber))
+											{
+												seenBefore = true;
+											}
 										}
-									}
-									if(seenBefore)
-									{
-										if(lastPlace == 9)
+										if(seenBefore)
 										{
-											lastPage += 1;
-											lastPlace = 0;
+											if(lastPlace == 9)
+											{
+												lastPage += 1;
+												lastPlace = 0;
+											}
+											else
+											{
+												lastPlace += 1;
+											}
 										}
 										else
 										{
-											lastPlace += 1;
+											listOfReports.add(myEDA);
 										}
-									}
-									else
-									{
-										listOfReports.add(myEDA);
+									} catch (Exception e) {
+										System.out.println(e.getMessage());
 									}
 									
 									//myEDA.createXLS();
 									
-
 								}
 
 								System.out.println("At Page " + page);
@@ -234,7 +239,7 @@ public class Scrapper extends Application {
 		return html.contains("HOMEBASE");
 	}
 	//takes certain webpage as a html and ouputs bnq stuff
-	public StatusReport readHomeBaseHTML(String html)
+	public StatusReport readHomeBaseHTML(String html) throws Exception
 	{
 		String orderNumber,transactionDate,originalCustomerOrderNumber;
 		orderNumber = html.substring(html.indexOf("END OF ORDER") + 13, html.indexOf("<", html.indexOf("END OF ORDER")+13));
@@ -244,6 +249,14 @@ public class Scrapper extends Application {
 		transactionDate = html.substring(html.indexOf("DELIVER BY") + 85, html.indexOf("<", html.indexOf("DELIVER BY")+85));
 		System.out.println(transactionDate);
 		
+		 Pattern testPattern= Pattern.compile("^[0-9]{10}");
+		 Matcher teststring= testPattern.matcher(originalCustomerOrderNumber);
+
+		if(!teststring.matches())
+		{
+		  
+		  throw new Exception("no customer order");
+		}
 		return new StatusReport(orderNumber,transactionDate,originalCustomerOrderNumber);
 
 

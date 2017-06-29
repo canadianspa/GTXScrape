@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.JButton;
@@ -22,6 +23,7 @@ public class EDCmaker {
 	private JTextField txt_invoice;
 	private JTextField txt_delDate;
 	public ArrayList<EDC> allEDC = new ArrayList<EDC>(); 
+	private JTextField txt_seqNo;
 
 	/**
 	 * Launch the application.
@@ -53,7 +55,7 @@ public class EDCmaker {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new GridLayout(5, 2, 0, 0));
+		frame.getContentPane().setLayout(new GridLayout(6, 2, 0, 0));
 
 		JLabel lblNewLabel = new JLabel("Purchase Order Number");
 		frame.getContentPane().add(lblNewLabel);
@@ -101,8 +103,9 @@ public class EDCmaker {
 						System.out.println(a.purchOrderNo);
 						if(a.purchOrderNo.equals(txt_purch.getText()))
 						{
-							System.out.println("found one");
+							JOptionPane.showMessageDialog(null,"Purchase Order Found", "EDC", JOptionPane.PLAIN_MESSAGE);
 							allEDC.add(new EDC(a,txt_delDate.getText(),txt_invoice.getText()));
+							break;
 						}
 					}
 				} catch (FileNotFoundException e1) {
@@ -113,6 +116,13 @@ public class EDCmaker {
 			}
 		});
 		frame.getContentPane().add(btnAdd);
+		
+		JLabel lblSequenceNo = new JLabel("Sequence No");
+		frame.getContentPane().add(lblSequenceNo);
+		
+		txt_seqNo = new JTextField();
+		txt_seqNo.setColumns(10);
+		frame.getContentPane().add(txt_seqNo);
 
 		JPanel panel_1 = new JPanel();
 		frame.getContentPane().add(panel_1);
@@ -121,7 +131,7 @@ public class EDCmaker {
 		btnCreateEDC.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				EDC.createEDCXLS(allEDC);
+				EDC.createEDCXLS(allEDC,txt_seqNo.getText());
 			}
 		});
 		frame.getContentPane().add(btnCreateEDC);

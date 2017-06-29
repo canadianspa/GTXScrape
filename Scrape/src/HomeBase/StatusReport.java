@@ -61,7 +61,7 @@ public class StatusReport {
 				//if(row.getCell(2).getStringCellValue().equals("C30"))
 				//{
 
-				if(row.getCell(1).getStringCellValue().equals(""))
+				if(row.getCell(2).getStringCellValue().equals(""))
 				{
 					break;
 				}

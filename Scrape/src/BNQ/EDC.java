@@ -26,7 +26,7 @@ public class EDC {
 	}
 
 
-	public static void createEDCXLS(ArrayList<EDC> EDCs)
+	public static void createEDCXLS(ArrayList<EDC> EDCs,String seqNo)
 	{
 		int cRow = 2;
 		EDA cEDA;
@@ -46,7 +46,7 @@ public class EDC {
 				for(int i = 0; i < cEDA.eanCode1.size(); i ++)
 				{
 					Row row = sheet.getRow(cRow);
-					row.getCell(0).setCellValue(cEDA.seqNo);
+					row.getCell(0).setCellValue(seqNo);
 					row.getCell(1).setCellValue(cEDA.storeCode);
 					row.getCell(2).setCellValue(cEDA.purchOrderNo);
 					row.getCell(3).setCellValue(cEDA.custTellNo1);

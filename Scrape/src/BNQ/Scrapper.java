@@ -140,31 +140,35 @@ public class Scrapper extends Application {
 								String html = (String) webEngine.executeScript("document.documentElement.outerHTML");
 								if(isBNQ(html))
 								{
-									EDA myEDA = Scrapper.this.readBNQHTML(html);
-									//make sure havent already seen it
-									boolean seenBefore =false;
-									for(EDA e : listOfEda)
-									{
-										if(e.purchOrderNo.equals(myEDA.purchOrderNo))
+									try {
+										EDA myEDA = Scrapper.this.readBNQHTML(html);
+										//make sure havent already seen it
+										boolean seenBefore =false;
+										for(EDA e : listOfEda)
 										{
-											seenBefore = true;
+											if(e.purchOrderNo.equals(myEDA.purchOrderNo))
+											{
+												seenBefore = true;
+											}
 										}
-									}
-									if(seenBefore)
-									{
-										if(lastPlace == 9)
+										if(seenBefore)
 										{
-											lastPage += 1;
-											lastPlace = 0;
+											if(lastPlace == 9)
+											{
+												lastPage += 1;
+												lastPlace = 0;
+											}
+											else
+											{
+												lastPlace += 1;
+											}
 										}
 										else
 										{
-											lastPlace += 1;
+											listOfEda.add(myEDA);
 										}
-									}
-									else
-									{
-										listOfEda.add(myEDA);
+									} catch (Exception e) {
+										e.printStackTrace();
 									}
 									
 									//myEDA.createXLS();
@@ -235,7 +239,7 @@ public class Scrapper extends Application {
 		return html.contains("BnQ");
 	}
 	//takes certain webpage as a html and ouputs bnq stuff
-	public EDA readBNQHTML(String html)
+	public EDA readBNQHTML(String html) throws Exception
 	{
 		//System.out.println(html);
 		String storeCode,purchOrderNo,custTellNo1,bQSuppNo,custName;
