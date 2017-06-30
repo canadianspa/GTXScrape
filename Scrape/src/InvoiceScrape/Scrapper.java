@@ -141,30 +141,34 @@ public class Scrapper extends Application {
 								String html = (String) webEngine.executeScript("document.documentElement.outerHTML");
 								if(isBNQ(html))
 								{
-									Invoices myEDA = Scrapper.this.readInvoices(html);
-									boolean seenBefore =false;
-									for(Invoices e : listOfReports)
-									{
-										if(e.purchOrNo.equals(myEDA.purchOrNo))
+									try {
+										Invoices myEDA = Scrapper.this.readInvoices(html);
+										boolean seenBefore =false;
+										for(Invoices e : listOfReports)
 										{
-											seenBefore = true;
+											if(e.purchOrNo.equals(myEDA.purchOrNo))
+											{
+												seenBefore = true;
+											}
 										}
-									}
-									if(seenBefore)
-									{
-										if(lastPlace == 9)
+										if(seenBefore)
 										{
-											lastPage += 1;
-											lastPlace = 0;
+											if(lastPlace == 9)
+											{
+												lastPage += 1;
+												lastPlace = 0;
+											}
+											else
+											{
+												lastPlace += 1;
+											}
 										}
 										else
 										{
-											lastPlace += 1;
+											listOfReports.add(myEDA);
 										}
-									}
-									else
-									{
-										listOfReports.add(myEDA);
+									} catch (Exception e) {
+										e.printStackTrace();
 									}
 									
 
@@ -232,7 +236,7 @@ public class Scrapper extends Application {
 		return html.contains("BnQ");
 	}
 	//takes certain webpage as a html and ouputs bnq stuff
-	public Invoices readInvoices(String html)
+	public Invoices readInvoices(String html) throws Exception
 	{
 		String invoiceNo,purchOrNo,invDate,delDate,amountOut;
 		//CUSTOMER ORDER seems wrong
