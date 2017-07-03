@@ -46,7 +46,7 @@ public class Scrapper extends Application {
 		scrollPane.setContent(browser);
 
 		webEngine.load("https://gxstradeweb.gxsolc.com/pub-log/login.html?lang=en");
-
+//TODO IF ELSE HERE PLEASE
 		//cant work out how to tell the program that a state has finished loading without this 
 		webEngine.getLoadWorker().stateProperty().addListener(
 				new ChangeListener<State>() {

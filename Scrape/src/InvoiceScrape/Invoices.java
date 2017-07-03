@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ import org.apache.poi.ss.usermodel.Row;
 import BNQ.EDA;
 import BNQ.EDC;
 
-public class Invoices {
+public class Invoices implements Serializable {
 
 	String invoiceNo,purchOrNo,invDate,delDate,amountOut;
 
@@ -34,13 +36,64 @@ public class Invoices {
 		this.amountOut = amountOut;
 	}
 
-	public static void createInvoices(ArrayList<Invoices> listOfInvoices)
+
+	public static void addToInvoiceList(ArrayList<Invoices> invoices)
 	{
+		try {
+			FileInputStream fiut = new FileInputStream("all.invoice");
+			ObjectInputStream ois;
+			ArrayList<Invoices> alreadyGot;
+			try {
+				//cant read first time
+				ois = new ObjectInputStream(fiut);
+				alreadyGot = (ArrayList<Invoices>) ois.readObject();
+			} catch (Exception e) {
+				alreadyGot = new ArrayList<Invoices>();
+			}
+			System.out.println("before");
+			for(Invoices e : alreadyGot)
+			{
+				System.out.println(e.purchOrNo);
+			}
+			alreadyGot.addAll(invoices);
+			System.out.println("after");
+
+			for(Invoices e : alreadyGot)
+			{
+				System.out.println(e.purchOrNo);
+			}
+
+
+			FileOutputStream fout = new FileOutputStream("all.invoice");
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(alreadyGot);
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public static void createInvoices()
+	{
+		ArrayList<Invoices> listOfInvoices;
+		try {
+			FileInputStream fiut = new FileInputStream("all.invoice");
+			ObjectInputStream ois;
+			ois = new ObjectInputStream(fiut);
+			listOfInvoices = (ArrayList<Invoices>) ois.readObject();
+			
+		} catch (Exception e) {
+			listOfInvoices = new ArrayList<Invoices>();
+		}
+
 
 		SimpleDateFormat form = new SimpleDateFormat("dd/MM/yyyy");
 
 		try {
-			InputStream inputStream = new FileInputStream ("invoicewithyes.xls");
+			InputStream inputStream = new FileInputStream ("invoice.xls");
 			POIFSFileSystem fileSystem = new POIFSFileSystem (inputStream);
 
 			HSSFWorkbook workBook = new HSSFWorkbook (fileSystem);
@@ -55,11 +108,11 @@ public class Invoices {
 					{
 						if(z.purchOrNo.substring(0, 8).equals(po))
 						{
-							
+
 							System.out.println("yes");
 							row.createCell(2).setCellValue("YES");
 							row.createCell(5).setCellValue(z.invDate);
-							row.createCell(6).setCellValue(z.amountOut);
+							row.createCell(3).setCellValue(z.amountOut);
 
 
 						}
@@ -71,7 +124,7 @@ public class Invoices {
 				}
 			}
 			inputStream.close();
-			FileOutputStream fileOut1 = new FileOutputStream("invoicewithyes.xls");
+			FileOutputStream fileOut1 = new FileOutputStream("invoice.xls");
 			workBook.write(fileOut1);
 			fileOut1.close();
 			System.out.println("invoice report created");

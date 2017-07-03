@@ -36,7 +36,8 @@ public class Scrapper extends Application {
 		webEngine = browser.getEngine();
 		ScrollPane scrollPane = new ScrollPane();
 		scrollPane.setContent(browser);
-
+		//webEngine.load("https://kingfisher.edt.fr/BCP-Web/");
+		System.setProperty("jsse.enableSNIExtension", "false");
 		webEngine.load("https://kingfisher.edt.fr/BCP-Web/login.do?");
 
 		//cant work out how to tell the program that a state has finished loading without this 
@@ -48,8 +49,8 @@ public class Scrapper extends Application {
 							if(webPos == 1)
 							{
 								try {
-									webEngine.executeScript("UserForm.login.value='Xavier Labelle';UserForm.password.value='***REMOVED***';validate();");
-									webPos = 2;
+									webEngine.executeScript("UserForm.login.value='Xavier Labelle';UserForm.password.value='***REMOVED***';");
+									webPos = 1;
 								} catch (Exception e) {
 
 									e.printStackTrace();
@@ -58,18 +59,37 @@ public class Scrapper extends Application {
 							else if(webPos ==2)
 							{
 								try {
-									webEngine.executeScript("checkedAllline(checked, \"chkbox\", \"webEdiDisplayDispatch\")");
+									webEngine.executeScript("validate()");
 									webPos = 3;
 								} catch (Exception e) {
 
 									e.printStackTrace();
 								}
 							}
-							else if(webPos ==2)
+							else if(webPos ==3)
 							{
 								try {
 									webEngine.executeScript("checkedAllline(checked, \"chkbox\", \"webEdiDisplayDispatch\")");
-									webPos = 2;
+									webPos = 4;
+								} catch (Exception e) {
+
+									e.printStackTrace();
+								}
+							}
+							else if(webPos ==4)
+							{
+								try {
+									webEngine.executeScript("webEdiDisplayDispatch.selectAll.click();");
+									webPos = 5;
+								} catch (Exception e) {
+
+									e.printStackTrace();
+								}
+							}
+							else if(webPos ==5)
+							{
+								try {
+									webEngine.executeScript("manyCheckedAction('chkbox', 'webEdiDisplayDispatch', '/displayWebEdiMessage.do?method=exportCSV','exportCSV')");
 								} catch (Exception e) {
 
 									e.printStackTrace();
@@ -96,16 +116,9 @@ public class Scrapper extends Application {
 
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Enter page up to where you need");
-		int page = scanner.nextInt();
-		System.out.println("Enter place on the page up to where you need (1- 10)");
-		int placeOnPage = scanner.nextInt();
-		System.out.println("Enter the next sequence number");
-		int seqNO = scanner.nextInt();
 
 		String[] myArg = new String[3];
-		myArg[0] = String.valueOf(page);
-		myArg[1] = String.valueOf(placeOnPage);
-		myArg[2] = String.valueOf(seqNO);
+
 		Scrapper.launch(myArg);
 
 

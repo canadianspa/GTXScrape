@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 
 public class Scrapper extends Application {
 	int page =1;
-	int placeOnPage = 7;
+	int placeOnPage = 0;
 	int webPos = 1;
 	int lastPage;
 	int lastPlace;
@@ -180,8 +180,9 @@ public class Scrapper extends Application {
 								//if at the last place and page stop
 								if (placeOnPage > lastPlace && page >= lastPage)
 								{
-									System.out.println("Creating XLS");
-									Invoices.createInvoices(listOfReports);
+									System.out.println("adding to invoices");
+									//Invoices.createInvoices(listOfReports);
+									Invoices.addToInvoiceList(listOfReports);
 									stage.close();
 									webPos = 8;
 								}
