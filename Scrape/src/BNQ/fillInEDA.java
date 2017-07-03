@@ -61,10 +61,20 @@ public class fillInEDA {
 				
 				HSSFSheet sheet  = workBook.getSheetAt (0);
 				sheet.getRow(0).createCell(8).setCellValue(alreadyGot.get(0).purchOrderNo);
+				
 				int cRow =1;
+				
 				for(EDA a : alreadyGot)
 				{
-					Row row = sheet.createRow(cRow);
+					Row row;
+					if(cRow ==1)
+					{
+						row = sheet.getRow(cRow);
+					}
+					else
+					{
+						row = sheet.createRow(cRow);
+					}
 					row.createCell(0).setCellValue(a.purchOrderNo);
 					
 					CellStyle cellStyle = workBook.createCellStyle();

@@ -50,7 +50,7 @@ public class Scrapper extends Application {
 							{
 								try {
 									webEngine.executeScript("UserForm.login.value='Xavier Labelle';UserForm.password.value='***REMOVED***';");
-									webPos = 1;
+									webPos = 2;
 								} catch (Exception e) {
 
 									e.printStackTrace();

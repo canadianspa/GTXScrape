@@ -93,6 +93,7 @@ public class StatusReport {
 			int cRow = 7;
 			for(int z = 0; z < listOfReports.size(); z ++)
 			{
+				
 				Row row = sheet.getRow(cRow);
 				StatusReport cReport = listOfReports.get(z);
 				row.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
