@@ -1,11 +1,9 @@
 package InvoiceScrape;
 
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Scanner;
 
-import BNQ.EDA;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

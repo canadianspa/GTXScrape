@@ -1,20 +1,24 @@
 package BNQ;
 
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
 import java.awt.GridLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.JPanel;
-import javax.swing.JButton;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.ObjectInputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.awt.event.ActionEvent;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class EDCmaker {
 
@@ -85,41 +89,71 @@ public class EDCmaker {
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				try {
-					FileInputStream fiut = new FileInputStream("all.EDA");
-					ObjectInputStream ois;
-					ArrayList<EDA> alreadyGot;
-					
-					try {
-						//cant read first time
-						ois = new ObjectInputStream(fiut);
-						alreadyGot = (ArrayList<EDA>) ois.readObject();
-					} catch (Exception f) {
-						alreadyGot = new ArrayList<EDA>();
-					}
-					
-					for(EDA a: alreadyGot)
-					{
-						System.out.println(a.purchOrderNo);
-						if(a.purchOrderNo.equals(txt_purch.getText()))
-						{
-							JOptionPane.showMessageDialog(null,"Purchase Order Found", "EDC", JOptionPane.PLAIN_MESSAGE);
-							allEDC.add(new EDC(a,txt_delDate.getText(),txt_invoice.getText()));
-							break;
-						}
-					}
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				boolean someThingWrong = false;
+				Pattern testPattern= Pattern.compile("^[0-9]{8}");
+				Matcher teststring= testPattern.matcher(txt_purch.getText());
+
+				if(!teststring.matches())
+				{
+					JOptionPane.showMessageDialog(null,"Purchase Order should be 8 Numbers", "EDC", JOptionPane.PLAIN_MESSAGE);
+					someThingWrong = true;
+
 				}
-				
+				testPattern= Pattern.compile("^[0-9]{5}");
+				teststring= testPattern.matcher(txt_invoice.getText());
+
+				if(!teststring.matches())
+				{
+					JOptionPane.showMessageDialog(null,"Invoice should be 5 Numbers", "EDC", JOptionPane.PLAIN_MESSAGE);
+					someThingWrong = true;
+				}
+
+				SimpleDateFormat form = new SimpleDateFormat("dd/MM/yyyy");
+				try {
+					form.parse(txt_delDate.getText());
+				} catch (ParseException e2) {
+					JOptionPane.showMessageDialog(null,"Date incorrect format should be dd/mm/yyyy", "EDC", JOptionPane.PLAIN_MESSAGE);
+					someThingWrong = true;
+				}
+
+				if(!someThingWrong)
+				{
+					try {
+						FileInputStream fiut = new FileInputStream("all.EDA");
+						ObjectInputStream ois;
+						ArrayList<EDA> alreadyGot;
+
+						try {
+							//cant read first time
+							ois = new ObjectInputStream(fiut);
+							alreadyGot = (ArrayList<EDA>) ois.readObject();
+						} catch (Exception f) {
+							alreadyGot = new ArrayList<EDA>();
+						}
+
+						for(EDA a: alreadyGot)
+						{
+							System.out.println(a.purchOrderNo);
+							if(a.purchOrderNo.equals(txt_purch.getText()))
+							{
+								JOptionPane.showMessageDialog(null,"Purchase Order Found", "EDC", JOptionPane.PLAIN_MESSAGE);
+								allEDC.add(new EDC(a,txt_delDate.getText(),txt_invoice.getText()));
+								break;
+							}
+						}
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+				}
 			}
 		});
 		frame.getContentPane().add(btnAdd);
-		
+
 		JLabel lblSequenceNo = new JLabel("Sequence No");
 		frame.getContentPane().add(lblSequenceNo);
-		
+
 		txt_seqNo = new JTextField();
 		txt_seqNo.setColumns(10);
 		frame.getContentPane().add(txt_seqNo);
@@ -130,8 +164,10 @@ public class EDCmaker {
 		JButton btnCreateEDC = new JButton("Create EDC");
 		btnCreateEDC.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				EDC.createEDCXLS(allEDC,txt_seqNo.getText());
+				JOptionPane.showMessageDialog(null,"EDC Created", "EDC", JOptionPane.PLAIN_MESSAGE);
+				
 			}
 		});
 		frame.getContentPane().add(btnCreateEDC);

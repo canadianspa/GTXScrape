@@ -17,8 +17,6 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 
-import BNQ.EDA;
-
 public class fillInInvoices {
 
 	public static void main(String[] args) {

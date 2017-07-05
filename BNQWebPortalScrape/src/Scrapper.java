@@ -1,6 +1,5 @@
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -49,28 +48,8 @@ public class Scrapper extends Application {
 							if(webPos == 1)
 							{
 								try {
-									webEngine.executeScript("UserForm.login.value='Xavier Labelle';UserForm.password.value='***REMOVED***';");
+									webEngine.executeScript("UserForm.login.value='Xavier Labelle';UserForm.password.value='Redhill1';validate()");
 									webPos = 2;
-								} catch (Exception e) {
-
-									e.printStackTrace();
-								}
-							}
-							else if(webPos ==2)
-							{
-								try {
-									webEngine.executeScript("validate()");
-									webPos = 3;
-								} catch (Exception e) {
-
-									e.printStackTrace();
-								}
-							}
-							else if(webPos ==3)
-							{
-								try {
-									webEngine.executeScript("checkedAllline(checked, \"chkbox\", \"webEdiDisplayDispatch\")");
-									webPos = 4;
 								} catch (Exception e) {
 
 									e.printStackTrace();

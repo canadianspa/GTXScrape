@@ -1,18 +1,14 @@
 package BNQ;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
 import java.awt.GridLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
-import javafx.application.Application;
-import javafx.stage.Stage;
-
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class Inputter{
 
