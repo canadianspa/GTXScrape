@@ -58,7 +58,7 @@ public class fillInEDA {
 				CreationHelper createHelper = workBook.getCreationHelper();
 				
 				HSSFSheet sheet  = workBook.getSheetAt (0);
-				sheet.getRow(0).createCell(8).setCellValue(alreadyGot.get(0).purchOrderNo);
+				sheet.getRow(0).createCell(9).setCellValue(alreadyGot.get(0).purchOrderNo);
 				
 				int cRow =1;
 				
