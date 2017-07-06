@@ -71,7 +71,7 @@ public class Inputter{
 				String[] myArg = new String[2];
 				myArg[0] = txtUpToPage.getText();
 				myArg[1] = txtUpToPlace.getText();
-				Scrapper.launch(Scrapper.class,myArg);
+				HomeBaseMultiScraper.launch(HomeBaseMultiScraper.class,myArg);
 				
 			}
 		});
