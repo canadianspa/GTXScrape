@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -38,7 +39,7 @@ public class StatusReport {
 		this.status = status;
 	} 
 
-	public static void createStatusReport(ArrayList<StatusReport> listOfReports)
+	public static void createStatusReport(CopyOnWriteArrayList<StatusReport> listOfReports)
 	{
 		SimpleDateFormat form = new SimpleDateFormat("dd/MM/yyyy");
 

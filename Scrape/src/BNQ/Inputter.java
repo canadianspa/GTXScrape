@@ -80,7 +80,7 @@ public class Inputter{
 				myArg[0] = txtUpToPage.getText();
 				myArg[1] = txtUpToPlace.getText();
 				myArg[2] = txtSeqNo.getText();
-				Scrapper.launch(Scrapper.class,myArg);
+				BNQMultiScraper.launch(BNQMultiScraper.class,myArg);
 				
 			}
 		});
