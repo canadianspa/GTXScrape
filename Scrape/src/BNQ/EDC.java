@@ -76,10 +76,10 @@ public class EDC {
 				}
 			}
 
-			FileOutputStream fileOut1 = new FileOutputStream("EDC.xls");
+			FileOutputStream fileOut1 = new FileOutputStream(EDCs.get(0).start.purchOrderNo + " to " + EDCs.get(EDCs.size() -1).start.purchOrderNo + ".xls");
 			workBook.write(fileOut1);
 			fileOut1.close();
-			System.out.println("EDC.xls created");
+			System.out.println(EDCs.get(0).start.purchOrderNo + " to " + EDCs.get(EDCs.size() -1).start.purchOrderNo + ".xls created");
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

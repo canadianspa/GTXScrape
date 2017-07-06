@@ -2,6 +2,7 @@ package BNQ;
 
 import java.awt.EventQueue;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
@@ -19,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import java.awt.Font;
 
 public class EDCmaker {
 
@@ -57,28 +59,34 @@ public class EDCmaker {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 794, 698);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new GridLayout(6, 2, 0, 0));
 
 		JLabel lblNewLabel = new JLabel("Purchase Order Number");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 34));
 		frame.getContentPane().add(lblNewLabel);
 
 		txt_purch = new JTextField();
+		txt_purch.setFont(new Font("Tahoma", Font.PLAIN, 34));
 		frame.getContentPane().add(txt_purch);
 		txt_purch.setColumns(10);
 
 		JLabel lblInvoiceNumber = new JLabel("Invoice Number");
+		lblInvoiceNumber.setFont(new Font("Tahoma", Font.PLAIN, 34));
 		frame.getContentPane().add(lblInvoiceNumber);
 
 		txt_invoice = new JTextField();
+		txt_invoice.setFont(new Font("Tahoma", Font.PLAIN, 34));
 		txt_invoice.setColumns(10);
 		frame.getContentPane().add(txt_invoice);
 
 		JLabel lblDeliveryDate = new JLabel("Delivery Date");
+		lblDeliveryDate.setFont(new Font("Tahoma", Font.PLAIN, 34));
 		frame.getContentPane().add(lblDeliveryDate);
 
 		txt_delDate = new JTextField();
+		txt_delDate.setFont(new Font("Tahoma", Font.PLAIN, 34));
 		txt_delDate.setColumns(10);
 		frame.getContentPane().add(txt_delDate);
 
@@ -86,6 +94,7 @@ public class EDCmaker {
 		frame.getContentPane().add(panel);
 
 		JButton btnAdd = new JButton("Add");
+		btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 34));
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -116,8 +125,8 @@ public class EDCmaker {
 					JOptionPane.showMessageDialog(null,"Date Format should be dd/mm/yyyy", "EDC", JOptionPane.ERROR_MESSAGE);
 					someThingWrong = true;
 				}
-				
-				
+
+
 
 				if(!someThingWrong)
 				{
@@ -161,9 +170,11 @@ public class EDCmaker {
 		frame.getContentPane().add(btnAdd);
 
 		JLabel lblSequenceNo = new JLabel("Sequence No");
+		lblSequenceNo.setFont(new Font("Tahoma", Font.PLAIN, 34));
 		frame.getContentPane().add(lblSequenceNo);
 
 		txt_seqNo = new JTextField();
+		txt_seqNo.setFont(new Font("Tahoma", Font.PLAIN, 34));
 		txt_seqNo.setColumns(10);
 		frame.getContentPane().add(txt_seqNo);
 
@@ -171,16 +182,24 @@ public class EDCmaker {
 		frame.getContentPane().add(panel_1);
 
 		JButton btnCreateEDC = new JButton("Create EDC");
+		btnCreateEDC.setFont(new Font("Tahoma", Font.PLAIN, 34));
 		btnCreateEDC.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				EDC.createEDCXLS(allEDC,txt_seqNo.getText());
-				JOptionPane.showMessageDialog(null,"EDC Created", "EDC", JOptionPane.PLAIN_MESSAGE);
-				
+				try {
+					Integer.parseInt(txt_seqNo.getText());
+					EDC.createEDCXLS(allEDC,txt_seqNo.getText());
+					JOptionPane.showMessageDialog(null,"EDC Created", "EDC", JOptionPane.PLAIN_MESSAGE);
+				} catch (NumberFormatException e1) {
+					JOptionPane.showMessageDialog(null,"Sequence number not a number", "EDC", JOptionPane.ERROR_MESSAGE);
+
+
+				}
+
 			}
 		});
 		frame.getContentPane().add(btnCreateEDC);
-		
+
 		try {
 			FileInputStream fiut = new FileInputStream("all.EDA");
 			ObjectInputStream ois;
@@ -204,8 +223,8 @@ public class EDCmaker {
 		}
 
 	}
-	}
-	
-	
+}
+
+
 
 
