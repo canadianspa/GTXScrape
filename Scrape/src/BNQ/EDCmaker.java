@@ -95,7 +95,7 @@ public class EDCmaker {
 
 				if(!teststring.matches())
 				{
-					JOptionPane.showMessageDialog(null,"Purchase Order should be 8 Numbers", "EDC", JOptionPane.PLAIN_MESSAGE);
+					JOptionPane.showMessageDialog(null,"Purchase Order should be 8 Numbers", "EDC", JOptionPane.ERROR_MESSAGE);
 					someThingWrong = true;
 
 				}
@@ -104,17 +104,20 @@ public class EDCmaker {
 
 				if(!teststring.matches())
 				{
-					JOptionPane.showMessageDialog(null,"Invoice should be 5 Numbers", "EDC", JOptionPane.PLAIN_MESSAGE);
+					JOptionPane.showMessageDialog(null,"Invoice should be 5 Numbers", "EDC", JOptionPane.ERROR_MESSAGE);
 					someThingWrong = true;
 				}
 
-				SimpleDateFormat form = new SimpleDateFormat("dd/MM/yyyy");
-				try {
-					form.parse(txt_delDate.getText());
-				} catch (ParseException e2) {
-					JOptionPane.showMessageDialog(null,"Date incorrect format should be dd/mm/yyyy", "EDC", JOptionPane.PLAIN_MESSAGE);
+				testPattern= Pattern.compile("^([0-2][0-9]||3[0-1])/(0[0-9]||1[0-2])/([0-9][0-9])?[0-9][0-9]$");
+				teststring= testPattern.matcher(txt_delDate.getText());
+
+				if(!teststring.matches())
+				{
+					JOptionPane.showMessageDialog(null,"Date Format should be dd/mm/yyyy", "EDC", JOptionPane.ERROR_MESSAGE);
 					someThingWrong = true;
 				}
+				
+				
 
 				if(!someThingWrong)
 				{
@@ -131,15 +134,21 @@ public class EDCmaker {
 							alreadyGot = new ArrayList<EDA>();
 						}
 
+						boolean poFound = false;
 						for(EDA a: alreadyGot)
 						{
-							System.out.println(a.purchOrderNo);
 							if(a.purchOrderNo.equals(txt_purch.getText()))
 							{
-								JOptionPane.showMessageDialog(null,"Purchase Order Found", "EDC", JOptionPane.PLAIN_MESSAGE);
+								JOptionPane.showMessageDialog(null,"Purchase Order Added", "EDC", JOptionPane.PLAIN_MESSAGE);
 								allEDC.add(new EDC(a,txt_delDate.getText(),txt_invoice.getText()));
+								poFound = true;
 								break;
 							}
+						}
+						if(!poFound)
+						{
+							JOptionPane.showMessageDialog(null,"Purchase Order not found", "EDC", JOptionPane.ERROR_MESSAGE);
+
 						}
 					} catch (FileNotFoundException e1) {
 						// TODO Auto-generated catch block
@@ -171,6 +180,32 @@ public class EDCmaker {
 			}
 		});
 		frame.getContentPane().add(btnCreateEDC);
-	}
+		
+		try {
+			FileInputStream fiut = new FileInputStream("all.EDA");
+			ObjectInputStream ois;
+			ArrayList<EDA> alreadyGot;
 
-}
+			try {
+				//cant read first time
+				ois = new ObjectInputStream(fiut);
+				alreadyGot = (ArrayList<EDA>) ois.readObject();
+			} catch (Exception f) {
+				alreadyGot = new ArrayList<EDA>();
+			}
+
+			for(EDA a: alreadyGot)
+			{
+				System.out.println(a.purchOrderNo);
+			}
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+	}
+	}
+	
+	
+
+

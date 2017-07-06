@@ -35,7 +35,6 @@ public class Scrapper extends Application {
 		webEngine = browser.getEngine();
 		ScrollPane scrollPane = new ScrollPane();
 		scrollPane.setContent(browser);
-		//webEngine.load("https://kingfisher.edt.fr/BCP-Web/");
 		System.setProperty("jsse.enableSNIExtension", "false");
 		webEngine.load("https://kingfisher.edt.fr/BCP-Web/login.do?");
 
@@ -94,7 +93,6 @@ public class Scrapper extends Application {
 	public static void main(String[] args) {
 
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("Enter page up to where you need");
 
 		String[] myArg = new String[3];
 
