@@ -114,6 +114,7 @@ public class StatusReport {
 			FileOutputStream fileOut1 = new FileOutputStream("HOMEBASE STATUS UPDATE.xls");
 			workBook.write(fileOut1);
 
+			fileOut1.flush();
 			fileOut1.close();
 			System.out.println("status report created");
 		} catch (FileNotFoundException e) {

@@ -1,4 +1,4 @@
-package BNQ;
+package HomeBase;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -10,12 +10,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class Inputter{
+public class HomeBaseInputter{
 
 	private JFrame frame;
 	private JTextField txtUpToPage;
 	private JTextField txtUpToPlace;
-	private JTextField txtSeqNo;
 
 	/**
 	 * Launch the application.
@@ -24,7 +23,7 @@ public class Inputter{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Inputter window = new Inputter();
+					HomeBaseInputter window = new HomeBaseInputter();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -36,7 +35,7 @@ public class Inputter{
 	/**
 	 * Create the application.
 	 */
-	public Inputter() {
+	public HomeBaseInputter() {
 		initialize();
 	}
 
@@ -47,7 +46,7 @@ public class Inputter{
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new GridLayout(4, 2, 0, 0));
+		frame.getContentPane().setLayout(new GridLayout(3, 2, 0, 0));
 		
 		JLabel lblNewLabel = new JLabel("Up To Page");
 		frame.getContentPane().add(lblNewLabel);
@@ -63,24 +62,16 @@ public class Inputter{
 		frame.getContentPane().add(txtUpToPlace);
 		txtUpToPlace.setColumns(10);
 		
-		JLabel lblNewLabel_2 = new JLabel("Seq No");
-		frame.getContentPane().add(lblNewLabel_2);
-		
-		txtSeqNo = new JTextField();
-		frame.getContentPane().add(txtSeqNo);
-		txtSeqNo.setColumns(10);
-		
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel);
 		
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String[] myArg = new String[3];
+				String[] myArg = new String[2];
 				myArg[0] = txtUpToPage.getText();
 				myArg[1] = txtUpToPlace.getText();
-				myArg[2] = txtSeqNo.getText();
-				BNQMultiScraper.launch(BNQMultiScraper.class,myArg);
+				HomeBaseMultiScraper.launch(HomeBaseMultiScraper.class,myArg);
 				
 			}
 		});

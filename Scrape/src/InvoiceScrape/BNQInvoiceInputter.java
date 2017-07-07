@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class Inputter{
+public class BNQInvoiceInputter{
 
 	private JFrame frame;
 	private JTextField txtUpToPage;
@@ -23,7 +23,7 @@ public class Inputter{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Inputter window = new Inputter();
+					BNQInvoiceInputter window = new BNQInvoiceInputter();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -35,7 +35,7 @@ public class Inputter{
 	/**
 	 * Create the application.
 	 */
-	public Inputter() {
+	public BNQInvoiceInputter() {
 		initialize();
 	}
 

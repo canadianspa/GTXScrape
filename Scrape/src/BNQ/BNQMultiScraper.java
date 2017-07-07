@@ -8,6 +8,8 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.swing.JOptionPane;
+
 import javafx.application.Application;
 import javafx.application.Application.Parameters;
 import javafx.application.Platform;
@@ -16,6 +18,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -124,6 +127,13 @@ public class BNQMultiScraper extends Application {
 						EDANewFunctions.addToEDAList(listOfEda);
 						EDANewFunctions.fillOut();
 						System.out.println(listOfEda.size() + " BNQ orders");
+						Platform.runLater(() -> {
+							Alert alert = new Alert(Alert.AlertType.INFORMATION, "Closing Now");
+							alert.setHeaderText("Program Finished");
+							alert.showAndWait();
+							System.exit(0);
+						});
+						
 						return null;
 					}
 				}

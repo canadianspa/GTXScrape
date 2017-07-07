@@ -1,5 +1,8 @@
 package HomeBase;
 
+import java.awt.TextArea;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -9,10 +12,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.JOptionPane;
+
 import BNQ.BNQMultiScraper;
 import BNQ.EDA;
 import BNQ.EDANewFunctions;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.application.Application.Parameters;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,6 +27,8 @@ import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
@@ -53,7 +61,6 @@ public class HomeBaseMultiScraper extends Application {
 		lastPage = Integer.parseInt(s.get(0));
 		lastPlace = Integer.parseInt(s.get(1)) - 1;
 		TabPane tabPane = new TabPane();
-
 		for(int i = 0;i <10;i++)
 		{
 			Tab tab1 = new Tab();
@@ -98,7 +105,7 @@ public class HomeBaseMultiScraper extends Application {
 
 			@Override
 			protected Object call() throws Exception {
-				
+
 				while(true)
 				{
 					boolean ready = true;
@@ -123,11 +130,18 @@ public class HomeBaseMultiScraper extends Application {
 									return 0;
 								}
 							}
-							
+
 						});
 						System.out.println(listOfReports.size() + " status updates adding");
 						StatusReport.createStatusReport(listOfReports);
 						System.out.println(listOfReports.size() + " status updates after");
+						Platform.runLater(() -> {
+							Alert alert = new Alert(Alert.AlertType.INFORMATION, "Closing Now");
+							alert.setHeaderText("Program Finished");
+							alert.showAndWait();
+							System.exit(0);
+						});
+						
 						return null;
 					}
 				}
