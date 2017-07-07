@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -20,7 +21,93 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 
 public class InvoicesNewFunctions {
-	
+
+
+
+	public static void checkPayments() {
+
+		HashMap<String,Boolean> invoices = new HashMap<String,Boolean>();
+		try {
+			InputStream inputStream = new FileInputStream ("BNQTransactions.xls");
+			POIFSFileSystem fileSystem = new POIFSFileSystem (inputStream);
+
+			HSSFWorkbook workBook = new HSSFWorkbook (fileSystem);
+
+			HSSFSheet sheet  = workBook.getSheetAt(1);
+			CreationHelper createHelper = workBook.getCreationHelper();
+
+			for(int i = 2; i < sheet.getPhysicalNumberOfRows() ; i ++ )
+			{
+				try {
+					Row row = sheet.getRow(i);
+					String po = row.getCell(3).getStringCellValue();
+					double money = row.getCell(7).getNumericCellValue();
+					if(money == 0)
+					{
+						invoices.put(po, true);
+					}
+					else
+					{
+						invoices.put(po, false);
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			inputStream.close();
+
+
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+			try {
+				InputStream inputStream = new FileInputStream ("invoice.xls");
+				POIFSFileSystem fileSystem = new POIFSFileSystem (inputStream);
+
+				HSSFWorkbook workBook = new HSSFWorkbook (fileSystem);
+
+				HSSFSheet sheet  = workBook.getSheetAt (0);
+				CreationHelper createHelper = workBook.getCreationHelper();
+
+				for(int i = 1; i < sheet.getPhysicalNumberOfRows(); i ++ )
+				{
+						try {
+							Row row = sheet.getRow(i);
+							String invno = row.getCell(7).getStringCellValue();
+							for(String s : invoices.keySet())
+							{
+								if(s.equals(invno))
+								{
+									row.createCell(8).setCellValue(invoices.get(s));
+								}
+							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+				
+				
+				}
+				inputStream.close();
+				FileOutputStream fileOut1 = new FileOutputStream("invoice.xls");
+				workBook.write(fileOut1);
+				fileOut1.close();
+				System.out.println("added payment");
+				
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		
+
+	}
 	public static void addToInvoiceList(CopyOnWriteArrayList<Invoices> invoices)
 	{
 		try {
@@ -77,7 +164,7 @@ public class InvoicesNewFunctions {
 		}
 
 
-	
+
 
 		try {
 			InputStream inputStream = new FileInputStream ("invoice.xls");
@@ -104,15 +191,15 @@ public class InvoicesNewFunctions {
 
 							row.createCell(4).setCellValue("YES");
 							CellStyle cellStyle = workBook.createCellStyle();
-						    cellStyle.setDataFormat(
-						    createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
-						    Cell cell = row.createCell(6);
+							cellStyle.setDataFormat(
+									createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
+							Cell cell = row.createCell(6);
 							cell.setCellValue(form.parse(z.invDate));
 							Cell cell2 = row.createCell(3);
 							cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
 							cell2.setCellValue(Double.parseDouble(z.amountOut));
 							row.createCell(7).setCellValue(z.invoiceNo);
-							
+
 
 
 						}
