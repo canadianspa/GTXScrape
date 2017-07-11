@@ -16,6 +16,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -114,6 +115,12 @@ public class BNQInvoiceMultiScraper extends Application {
 						System.out.println("here");
 						InvoicesNewFunctions.addToInvoiceList((listOfInvoices));
 						InvoicesNewFunctions.createInvoices();
+						Platform.runLater(() -> {
+							Alert alert = new Alert(Alert.AlertType.INFORMATION, "Closing Now");
+							alert.setHeaderText("Program Finished");
+							alert.showAndWait();
+							System.exit(0);
+						});
 						return null;
 					}
 				}
