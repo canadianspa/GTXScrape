@@ -124,8 +124,8 @@ public class BNQMultiScraper extends Application {
 					       
 					    });
 						EDANewFunctions.createAllXLS(listOfEda);
-						EDANewFunctions.addToEDAList(listOfEda);
-						EDANewFunctions.fillOut();
+						//EDANewFunctions.addToEDAList(listOfEda);
+						//EDANewFunctions.fillOut();
 						System.out.println(listOfEda.size() + " BNQ orders");
 						Platform.runLater(() -> {
 							Alert alert = new Alert(Alert.AlertType.INFORMATION, "Closing Now");
